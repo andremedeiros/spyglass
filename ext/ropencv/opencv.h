@@ -3,6 +3,8 @@
 
 #include "ruby.h"
 
+#include "prelude.h"
+
 #include "image.h"
 #include "point.h"
 #include "rect.h"

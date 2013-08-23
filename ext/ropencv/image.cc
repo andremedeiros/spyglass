@@ -85,7 +85,11 @@ namespace OpenCV {
       cv::Rect *boundaries;
       Data_Get_Struct(rect, cv::Rect, boundaries);
 
-      (*img)(*boundaries).copyTo(*img);
+      cv::Mat *new_img = new cv::Mat();
+      (*img)(*boundaries).copyTo(*new_img);
+      rb_opencv_image_free(img);
+
+      Data_Set_Struct(self, new_img);
       return self;
     }
 
