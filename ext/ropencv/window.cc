@@ -65,7 +65,7 @@ namespace OpenCV {
 
       VALUE rb_opencv_gui_window_show(VALUE self, VALUE image) {
         if(!CLASS_OF(image) == OpenCV::Image::get_ruby_class()) {
-          rb_raise(rb_eTypeError, "expected OpenCV::Image");
+          rb_raise(rb_eTypeError, "wrong argument type %s (expected OpenCV::Image)", rb_obj_classname(image));
         }
 
         cv::Mat *img;

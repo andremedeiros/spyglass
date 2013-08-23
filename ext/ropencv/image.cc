@@ -17,6 +17,8 @@ namespace OpenCV {
       rb_define_method(ImageClass, "cols", RUBY_METHOD_FUNC(rb_opencv_image_get_cols), 0);
       rb_define_method(ImageClass, "crop", RUBY_METHOD_FUNC(rb_opencv_image_crop), 1);
       rb_define_method(ImageClass, "crop!", RUBY_METHOD_FUNC(rb_opencv_image_crop_inplace), 1);
+      rb_define_method(ImageClass, "dilate", RUBY_METHOD_FUNC(rb_opencv_image_dilate), -1);
+      rb_define_method(ImageClass, "dilate!", RUBY_METHOD_FUNC(rb_opencv_image_dilate_inplace), -1);
       rb_define_method(ImageClass, "erode", RUBY_METHOD_FUNC(rb_opencv_image_erode), -1);
       rb_define_method(ImageClass, "erode!", RUBY_METHOD_FUNC(rb_opencv_image_erode_inplace), -1);
       rb_define_method(ImageClass, "rows", RUBY_METHOD_FUNC(rb_opencv_image_get_rows), 0);
@@ -42,12 +44,48 @@ namespace OpenCV {
       return self;
     }
 
+
+    VALUE rb_opencv_image_dilate(int argc, VALUE *argv, VALUE self) {
+      VALUE iterations;
+      rb_scan_args(argc, argv, "01", &iterations);
+
+      if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)", rb_obj_classname(iterations));
+      }
+
+      int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
+
+      cv::Mat *img;
+      Data_Get_Struct(self, cv::Mat, img);
+
+      cv::Mat *new_img = new cv::Mat();
+      cv::dilate(*img, *new_img, cv::Mat(), cv::Point(-1, -1), iter);
+      return Data_Wrap_Struct(ImageClass, NULL, rb_opencv_image_free, new_img);
+    }
+
+    VALUE rb_opencv_image_dilate_inplace(int argc, VALUE *argv, VALUE self) {
+      VALUE iterations;
+      rb_scan_args(argc, argv, "01", &iterations);
+
+      if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)", rb_obj_classname(iterations));
+      }
+
+      int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
+
+      cv::Mat *img;
+      Data_Get_Struct(self, cv::Mat, img);
+
+      cv::dilate(*img, *img, cv::Mat(), cv::Point(-1, -1), iter);
+      return self;
+    }
+
     VALUE rb_opencv_image_erode(int argc, VALUE *argv, VALUE self) {
       VALUE iterations;
       rb_scan_args(argc, argv, "01", &iterations);
 
       if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
-        rb_raise(rb_eTypeError, "expected a Fixnum");
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)", rb_obj_classname(iterations));
       }
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
@@ -65,7 +103,7 @@ namespace OpenCV {
       rb_scan_args(argc, argv, "01", &iterations);
 
       if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
-        rb_raise(rb_eTypeError, "expected a Fixnum");
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)", rb_obj_classname(iterations));
       }
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
@@ -96,7 +134,7 @@ namespace OpenCV {
 
     VALUE rb_opencv_image_crop(VALUE self, VALUE rect) {
       if(!CLASS_OF(rect) == OpenCV::Rect::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "expected OpenCV::Rect");
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected OpenCV::Rect)", rb_obj_classname(rect));
       }
 
       cv::Mat *img;
@@ -111,7 +149,7 @@ namespace OpenCV {
 
     VALUE rb_opencv_image_crop_inplace(VALUE self, VALUE rect) {
       if(!CLASS_OF(rect) == OpenCV::Rect::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "expected OpenCV::Rect");
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected OpenCV::Rect)", rb_obj_classname(rect));
       }
 
       cv::Mat *img;
