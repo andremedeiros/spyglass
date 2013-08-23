@@ -72,9 +72,7 @@ namespace OpenCV {
       cv::VideoCapture *cap;
       Data_Get_Struct(self, cv::VideoCapture, cap);
 
-      VALUE result = cap->isOpened() ? Qtrue : Qfalse;
-
-      return result;
+      return (cap->isOpened()) ? Qtrue : Qfalse;
     }
 
     VALUE rb_opencv_video_capture_stop(VALUE self) {
