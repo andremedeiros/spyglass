@@ -5,6 +5,7 @@
 
 #include "prelude.h"
 
+#include "cascade_classifier.h"
 #include "image.h"
 #include "point.h"
 #include "rect.h"

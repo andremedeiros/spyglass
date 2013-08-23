@@ -17,6 +17,7 @@ namespace OpenCV {
 extern "C" {
   void Init_ropencv() {
     OpenCV::define_ruby_module();
+    OpenCV::CascadeClassifier::define_ruby_class();
     OpenCV::Image::define_ruby_class();
     OpenCV::Point::define_ruby_class();
     OpenCV::Rect::define_ruby_class();

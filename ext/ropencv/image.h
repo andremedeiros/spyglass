@@ -17,6 +17,7 @@ namespace OpenCV {
     VALUE rb_opencv_image_crop_inplace(VALUE self, VALUE rect);
     VALUE rb_opencv_image_dilate(int argc, VALUE *argv, VALUE self);
     VALUE rb_opencv_image_dilate_inplace(int argc, VALUE *argv, VALUE self);
+    VALUE rb_opencv_image_draw_rectangle(VALUE self, VALUE rect);
     VALUE rb_opencv_image_erode(int argc, VALUE *argv, VALUE self);
     VALUE rb_opencv_image_erode_inplace(int argc, VALUE *argv, VALUE self);
     VALUE rb_opencv_image_load(int argc, VALUE *argv, VALUE klass);

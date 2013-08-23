@@ -140,5 +140,10 @@ namespace OpenCV {
       rect->y = FIX2INT(y);
       return y;
     }
+
+    VALUE rb_opencv_rect_from_cvrect(cv::Rect *rect) {
+      cv::Rect *_rect = new cv::Rect(*rect);
+      return Data_Wrap_Struct(RectClass, NULL, rb_opencv_rect_free, _rect);
+    }
   }
 }

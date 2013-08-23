@@ -24,6 +24,8 @@ namespace OpenCV {
     VALUE rb_opencv_rect_set_width(VALUE self, VALUE width);
     VALUE rb_opencv_rect_set_x(VALUE self, VALUE x);
     VALUE rb_opencv_rect_set_y(VALUE self, VALUE y);
+
+    VALUE rb_opencv_rect_from_cvrect(cv::Rect *rect);
   }
 }
 

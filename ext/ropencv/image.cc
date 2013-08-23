@@ -19,6 +19,7 @@ namespace OpenCV {
       rb_define_method(ImageClass, "crop!", RUBY_METHOD_FUNC(rb_opencv_image_crop_inplace), 1);
       rb_define_method(ImageClass, "dilate", RUBY_METHOD_FUNC(rb_opencv_image_dilate), -1);
       rb_define_method(ImageClass, "dilate!", RUBY_METHOD_FUNC(rb_opencv_image_dilate_inplace), -1);
+      rb_define_method(ImageClass, "draw_rectangle", RUBY_METHOD_FUNC(rb_opencv_image_draw_rectangle), 1);
       rb_define_method(ImageClass, "erode", RUBY_METHOD_FUNC(rb_opencv_image_erode), -1);
       rb_define_method(ImageClass, "erode!", RUBY_METHOD_FUNC(rb_opencv_image_erode_inplace), -1);
       rb_define_method(ImageClass, "rows", RUBY_METHOD_FUNC(rb_opencv_image_get_rows), 0);
@@ -77,6 +78,23 @@ namespace OpenCV {
       Data_Get_Struct(self, cv::Mat, img);
 
       cv::dilate(*img, *img, cv::Mat(), cv::Point(-1, -1), iter);
+      return self;
+    }
+
+    VALUE rb_opencv_image_draw_rectangle(VALUE self, VALUE rect) {
+      if(CLASS_OF(rect) != OpenCV::Rect::get_ruby_class()) {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected OpenCV::Rect)", rb_obj_classname(rect));
+      }
+
+      cv::Mat *img;
+      Data_Get_Struct(self, cv::Mat, img);
+
+      cv::Rect *_rect;
+      Data_Get_Struct(rect, cv::Rect, _rect);
+
+      cv::Point bottom_right(_rect->x + _rect->width, _rect->y + _rect->height);
+
+      cv::rectangle(*img, _rect->tl(), bottom_right, cv::Scalar(255, 255, 255));
       return self;
     }
 
