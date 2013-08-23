@@ -7,6 +7,8 @@ namespace OpenCV {
   namespace GUI {
     void define_ruby_module();
     VALUE get_ruby_module();
+
+    VALUE rb_opencv_gui_wait_key(VALUE klass, VALUE timeout);
   }
 }
 
