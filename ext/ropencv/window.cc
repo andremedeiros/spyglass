@@ -23,7 +23,7 @@ namespace OpenCV {
       }
 
       VALUE rb_opencv_gui_window_alloc(VALUE self) {
-        char *title = (char *)malloc(sizeof(char));
+        char *title = NULL;
         return Data_Wrap_Struct(WindowClass, NULL, rb_opencv_gui_window_free, title);
       }
 
