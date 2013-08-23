@@ -10,8 +10,11 @@
 #include "rect.h"
 #include "size.h"
 
+#include "gui.h"
+#include "window.h"
+
 namespace OpenCV {
-  VALUE rb_opencv_module();
+  VALUE get_ruby_module();
 }
 
 extern "C" void Init_ropencv();

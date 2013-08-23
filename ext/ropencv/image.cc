@@ -5,10 +5,8 @@ static VALUE ImageClass;
 namespace OpenCV {
   namespace Image {
     void define_ruby_class() {
-      VALUE opencv_module = rb_opencv_module();
-
       // Class definition
-      ImageClass = rb_define_class_under(opencv_module, "Image", rb_cObject);
+      ImageClass = rb_define_class_under(OpenCV::get_ruby_module(), "Image", rb_cObject);
       rb_define_alloc_func(ImageClass, rb_opencv_image_alloc);
       rb_define_method(ImageClass, "initialize", RUBY_METHOD_FUNC(rb_opencv_image_initialize), 0);
 

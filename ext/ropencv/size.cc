@@ -5,10 +5,8 @@ static VALUE SizeClass;
 namespace OpenCV {
   namespace Size {
     void define_ruby_class() {
-      VALUE opencv_module = rb_opencv_module();
-
       // Class definition
-      SizeClass = rb_define_class_under(opencv_module, "Size", rb_cObject);
+      SizeClass = rb_define_class_under(OpenCV::get_ruby_module(), "Size", rb_cObject);
       rb_define_alloc_func(SizeClass, rb_opencv_size_alloc);
       rb_define_method(SizeClass, "initialize", RUBY_METHOD_FUNC(rb_opencv_size_initialize), 2);
 

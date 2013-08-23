@@ -5,10 +5,8 @@ static VALUE PointClass;
 namespace OpenCV {
   namespace Point {
     void define_ruby_class() {
-      VALUE opencv_module = rb_opencv_module();
-
       // Class definition
-      PointClass = rb_define_class_under(opencv_module, "Point", rb_cObject);
+      PointClass = rb_define_class_under(OpenCV::get_ruby_module(), "Point", rb_cObject);
       rb_define_alloc_func(PointClass, rb_opencv_point_alloc);
       rb_define_method(PointClass, "initialize", RUBY_METHOD_FUNC(rb_opencv_point_initialize), 2);
 

@@ -5,10 +5,8 @@ static VALUE RectClass;
 namespace OpenCV {
   namespace Rect {
     void define_ruby_class() {
-      VALUE opencv_module = rb_opencv_module();
-
       // Class definition
-      RectClass = rb_define_class_under(opencv_module, "Rect", rb_cObject);
+      RectClass = rb_define_class_under(OpenCV::get_ruby_module(), "Rect", rb_cObject);
       rb_define_alloc_func(RectClass, rb_opencv_rect_alloc);
       rb_define_method(RectClass, "initialize", RUBY_METHOD_FUNC(rb_opencv_rect_initialize), 4);
 
