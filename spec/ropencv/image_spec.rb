@@ -38,6 +38,15 @@ describe OpenCV::Image do
     end
   end
 
+  describe '#erode' do
+    it 'should erode the image' do
+      eroded = lena.erode
+
+      expect( eroded.cols ).to eq( lena.cols )
+      expect( eroded.rows ).to eq( lena.rows )
+    end
+  end
+
   describe '#crop' do
     it 'should crop the image to the correct proportions' do
       rect = OpenCV::Rect.new(0, 0, 256, 256)

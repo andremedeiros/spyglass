@@ -17,6 +17,8 @@ namespace OpenCV {
       rb_define_method(ImageClass, "cols", RUBY_METHOD_FUNC(rb_opencv_image_get_cols), 0);
       rb_define_method(ImageClass, "crop", RUBY_METHOD_FUNC(rb_opencv_image_crop), 1);
       rb_define_method(ImageClass, "crop!", RUBY_METHOD_FUNC(rb_opencv_image_crop_inplace), 1);
+      rb_define_method(ImageClass, "erode", RUBY_METHOD_FUNC(rb_opencv_image_erode), -1);
+      rb_define_method(ImageClass, "erode!", RUBY_METHOD_FUNC(rb_opencv_image_erode_inplace), -1);
       rb_define_method(ImageClass, "rows", RUBY_METHOD_FUNC(rb_opencv_image_get_rows), 0);
       rb_define_method(ImageClass, "size", RUBY_METHOD_FUNC(rb_opencv_image_get_size), 0);
       rb_define_method(ImageClass, "write", RUBY_METHOD_FUNC(rb_opencv_image_write), 1);
@@ -37,6 +39,41 @@ namespace OpenCV {
     }
 
     VALUE rb_opencv_image_initialize(VALUE self) {
+      return self;
+    }
+
+    VALUE rb_opencv_image_erode(int argc, VALUE *argv, VALUE self) {
+      VALUE iterations;
+      rb_scan_args(argc, argv, "01", &iterations);
+
+      if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
+        rb_raise(rb_eTypeError, "expected a Fixnum");
+      }
+
+      int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
+
+      cv::Mat *img;
+      Data_Get_Struct(self, cv::Mat, img);
+
+      cv::Mat *new_img = new cv::Mat();
+      cv::erode(*img, *new_img, cv::Mat(), cv::Point(-1, -1), iter);
+      return Data_Wrap_Struct(ImageClass, NULL, rb_opencv_image_free, new_img);
+    }
+
+    VALUE rb_opencv_image_erode_inplace(int argc, VALUE *argv, VALUE self) {
+      VALUE iterations;
+      rb_scan_args(argc, argv, "01", &iterations);
+
+      if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
+        rb_raise(rb_eTypeError, "expected a Fixnum");
+      }
+
+      int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
+
+      cv::Mat *img;
+      Data_Get_Struct(self, cv::Mat, img);
+
+      cv::erode(*img, *img, cv::Mat(), cv::Point(-1, -1), iter);
       return self;
     }
 
