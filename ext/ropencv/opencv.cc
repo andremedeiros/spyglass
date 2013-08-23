@@ -21,6 +21,7 @@ extern "C" {
     OpenCV::Point::define_ruby_class();
     OpenCV::Rect::define_ruby_class();
     OpenCV::Size::define_ruby_class();
+    OpenCV::VideoCapture::define_ruby_class();
 
     OpenCV::GUI::define_ruby_module();
     OpenCV::GUI::Window::define_ruby_class();

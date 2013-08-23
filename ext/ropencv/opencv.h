@@ -9,6 +9,7 @@
 #include "point.h"
 #include "rect.h"
 #include "size.h"
+#include "video_capture.h"
 
 #include "gui.h"
 #include "window.h"
