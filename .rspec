@@ -1,3 +1,6 @@
 --color
 --format progress
+<% if ENV['TRAVIS'] %>
+--tag ~gui
+<% end %>
 

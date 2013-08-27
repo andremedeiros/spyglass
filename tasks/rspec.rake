@@ -17,9 +17,5 @@ namespace :spec do
 end
 
 RSpec::Core::RakeTask.new('spec') do |t|
-  if tags = ENV["RSPEC_TAGS"]
-    t.rspec_opts = tags.split(" ").map { |tag| "--tag #{tag}"}.join(" ")
-  end
-
   t.verbose = true
 end

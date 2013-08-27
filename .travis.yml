@@ -1,11 +1,6 @@
 before_install:
   - bundle
 
-env:
-  # Don't run GUI specs on Travis, as the server is headless and
-  # doesn't have the UI dependencies installed.
-  - RSPEC_TAGS="~gui"
-
 rvm:
   - 1.9.3
   - 2.0.0
