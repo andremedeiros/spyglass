@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spyglass::GUI::Window do
+describe Spyglass::GUI::Window, gui: true do
   let(:window)  { Spyglass::GUI::Window.new("Image preview") }
   let(:lena)    { Spyglass::Image.load(fixture_path('lena.jpg')) }
 
