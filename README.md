@@ -1,4 +1,4 @@
-ropencv
-=======
+Spyglass
+========
 
-OpenCV. Made easy. In Ruby.
+OpenCV in Ruby, made simple.

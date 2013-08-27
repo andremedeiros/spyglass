@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift('lib')
-require 'ropencv/ropencv'
+require 'spyglass/spyglass'
 
-include OpenCV
+include Spyglass
 
 window  = GUI::Window.new "Video"
 cap     = VideoCapture.new 0
@@ -11,5 +11,5 @@ loop do
   cap >> frame
   window.show(frame)
 
-  break if OpenCV::GUI::wait_key(100) > 0
+  break if GUI::wait_key(100) > 0
 end

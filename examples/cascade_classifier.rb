@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift('lib')
-require 'ropencv/ropencv'
+require 'spyglass/spyglass'
 
-include OpenCV
+include Spyglass 
 
 classifier  = CascadeClassifier.new("spec/fixtures/haarcascade_frontalface_default.xml")
 window      = GUI::Window.new "Video"
@@ -16,6 +16,6 @@ loop do
 
   window.show(frame)
 
-  break if OpenCV::GUI::wait_key(10) > 0
+  break if GUI::wait_key(10) > 0
 end
 

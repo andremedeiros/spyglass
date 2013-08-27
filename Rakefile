@@ -1,13 +1,5 @@
-require "bundler/gem_tasks"
-require "rake/extensiontask"
-require "rspec/core/rake_task"
+require 'rake'
 
-Rake::ExtensionTask.new("ropencv") do |extension|
-  extension.lib_dir = "lib/ropencv"
-end
-
-RSpec::Core::RakeTask.new('spec') do |t|
-  t.verbose = true
-end
+Dir['tasks/*.rake'].sort.each { |f| load f }
 
 task :default => [:clean, :compile, :spec]

@@ -1,4 +1,4 @@
-require 'ropencv/ropencv'
+require 'spyglass/spyglass'
 require 'tmpdir'
 
 require 'matchers/close_to'
