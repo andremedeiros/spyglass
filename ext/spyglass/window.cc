@@ -48,6 +48,8 @@ namespace Spyglass {
 
         cv::destroyWindow(title);
         cv::waitKey(1);
+
+        return self;
       }
 
       static VALUE rb_move(VALUE self, VALUE x, VALUE y) {
@@ -59,6 +61,8 @@ namespace Spyglass {
 
         cv::moveWindow(title, FIX2INT(x), FIX2INT(y));
         cv::waitKey(1);
+
+        return self;
       }
 
       static VALUE rb_show(VALUE self, VALUE image) {
