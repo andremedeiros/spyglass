@@ -56,8 +56,7 @@ namespace Spyglass {
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
 
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
+      SG_GET_IMAGE(self, img);
 
       cv::Mat *new_img = new cv::Mat();
       cv::dilate(*img, *new_img, cv::Mat(), cv::Point(-1, -1), iter);
@@ -74,8 +73,7 @@ namespace Spyglass {
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
 
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
+      SG_GET_IMAGE(self, img);
 
       cv::dilate(*img, *img, cv::Mat(), cv::Point(-1, -1), iter);
       return self;
@@ -86,11 +84,8 @@ namespace Spyglass {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)", rb_obj_classname(rect));
       }
 
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
-
-      cv::Rect *_rect;
-      Data_Get_Struct(rect, cv::Rect, _rect);
+      SG_GET_IMAGE(self, img);
+      SG_GET_RECT(rect, _rect);
 
       cv::Point bottom_right(_rect->x + _rect->width, _rect->y + _rect->height);
 
@@ -108,8 +103,7 @@ namespace Spyglass {
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
 
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
+      SG_GET_IMAGE(self, img);
 
       cv::Mat *new_img = new cv::Mat();
       cv::erode(*img, *new_img, cv::Mat(), cv::Point(-1, -1), iter);
@@ -126,8 +120,7 @@ namespace Spyglass {
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
 
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
+      SG_GET_IMAGE(self, img);
 
       cv::erode(*img, *img, cv::Mat(), cv::Point(-1, -1), iter);
       return self;
@@ -145,8 +138,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_get_cols(VALUE self) {
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
+      SG_GET_IMAGE(self, img);
       return INT2FIX(img->cols);
     }
 
@@ -155,11 +147,8 @@ namespace Spyglass {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)", rb_obj_classname(rect));
       }
 
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
-
-      cv::Rect *boundaries;
-      Data_Get_Struct(rect, cv::Rect, boundaries);
+      SG_GET_IMAGE(self, img);
+      SG_GET_RECT(rect, boundaries);
 
       cv::Mat *res = new cv::Mat((*img)(*boundaries));
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, res);
@@ -170,11 +159,8 @@ namespace Spyglass {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)", rb_obj_classname(rect));
       }
 
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
-
-      cv::Rect *boundaries;
-      Data_Get_Struct(rect, cv::Rect, boundaries);
+      SG_GET_IMAGE(self, img);
+      SG_GET_RECT(rect, boundaries);
 
       cv::Mat *new_img = new cv::Mat();
       (*img)(*boundaries).copyTo(*new_img);
@@ -185,22 +171,19 @@ namespace Spyglass {
     }
 
     static VALUE rb_get_rows(VALUE self) {
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
+      SG_GET_IMAGE(self, img);
       return INT2FIX(img->rows);
     }
 
     static VALUE rb_get_size(VALUE self) {
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
+      SG_GET_IMAGE(self, img);
       return Spyglass::Size::size_from_cvmat(img);
     }
 
     static VALUE rb_write(VALUE self, VALUE filename) {
       Check_Type(filename, T_STRING);
 
-      cv::Mat *img;
-      Data_Get_Struct(self, cv::Mat, img);
+      SG_GET_IMAGE(self, img);
       bool res = cv::imwrite(StringValueCStr(filename), *img);
       return (res) ? Qtrue : Qfalse;
     }

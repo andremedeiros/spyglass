@@ -33,8 +33,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_initialize(VALUE self, VALUE src) {
-      cv::VideoCapture *cap;
-      Data_Get_Struct(self, cv::VideoCapture, cap);
+    	SG_GET_VIDEO_CAPTURE(self, cap);
 
       int type = TYPE(src);
 
@@ -57,11 +56,8 @@ namespace Spyglass {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)", rb_obj_classname(dest));
       }
 
-      cv::VideoCapture *cap;
-      Data_Get_Struct(self, cv::VideoCapture, cap);
-
-      cv::Mat *img;
-      Data_Get_Struct(dest, cv::Mat, img);
+      SG_GET_VIDEO_CAPTURE(self, cap);
+      SG_GET_IMAGE(dest, img);
 
       (*cap) >> (*img);
 
@@ -69,18 +65,13 @@ namespace Spyglass {
     }
 
     static VALUE rb_is_open(VALUE self) {
-      cv::VideoCapture *cap;
-      Data_Get_Struct(self, cv::VideoCapture, cap);
-
+      SG_GET_VIDEO_CAPTURE(self, cap);
       return (cap->isOpened()) ? Qtrue : Qfalse;
     }
 
     static VALUE rb_stop(VALUE self) {
-      cv::VideoCapture *cap;
-      Data_Get_Struct(self, cv::VideoCapture, cap);
-
+      SG_GET_VIDEO_CAPTURE(self, cap);
       cap->release();
-
       return self;
     }
   }

@@ -31,8 +31,7 @@ namespace Spyglass {
     static VALUE rb_initialize(VALUE self, VALUE src) {
       Check_Type(src, T_STRING);
 
-      cv::CascadeClassifier *classifier;
-      Data_Get_Struct(self, cv::CascadeClassifier, classifier);
+      SG_GET_CLASSIFIER(self, classifier);
 
       classifier->load(StringValueCStr(src));
 
@@ -44,11 +43,8 @@ namespace Spyglass {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)", rb_obj_classname(image));
       }
 
-      cv::CascadeClassifier *classifier;
-      Data_Get_Struct(self, cv::CascadeClassifier, classifier);
-
-      cv::Mat *img;
-      Data_Get_Struct(image, cv::Mat, img);
+      SG_GET_CLASSIFIER(self, classifier);
+      SG_GET_IMAGE(image, img);
 
       std::vector<cv::Rect> results;
       classifier->detectMultiScale(*img, results);
