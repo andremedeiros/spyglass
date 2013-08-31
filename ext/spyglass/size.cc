@@ -35,7 +35,7 @@ namespace Spyglass {
       Check_Type(width, T_FIXNUM);
       Check_Type(height, T_FIXNUM);
 
-      SG_GET_SIZE(self, size);
+      cv::Size *size = SG_GET_SIZE(self);
 
       size->width = FIX2INT(width);
       size->height = FIX2INT(height);
@@ -44,33 +44,33 @@ namespace Spyglass {
     }
 
     static VALUE rb_get_area(VALUE self) {
-      SG_GET_SIZE(self, size);
+      cv::Size *size = SG_GET_SIZE(self);
       return INT2FIX(size->area());
     }
 
     static VALUE rb_get_height(VALUE self) {
-      SG_GET_SIZE(self, size);
+      cv::Size *size = SG_GET_SIZE(self);
       return INT2FIX(size->height);
     }
 
     static VALUE rb_set_height(VALUE self, VALUE height) {
       Check_Type(height, T_FIXNUM);
 
-      SG_GET_SIZE(self, size);
+      cv::Size *size = SG_GET_SIZE(self);
 
       size->height = FIX2INT(height);
       return height;
     }
 
     static VALUE rb_get_width(VALUE self) {
-      SG_GET_SIZE(self, size);
+      cv::Size *size = SG_GET_SIZE(self);
       return INT2FIX(size->width);
     }
 
     static VALUE rb_set_width(VALUE self, VALUE width) {
       Check_Type(width, T_FIXNUM);
 
-      SG_GET_SIZE(self, size);
+      cv::Size *size = SG_GET_SIZE(self);
 
       size->width = FIX2INT(width);
       return width;

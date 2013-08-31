@@ -70,8 +70,7 @@ namespace Spyglass {
           rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)", rb_obj_classname(image));
         }
 
-        cv::Mat *img;
-        Data_Get_Struct(image, cv::Mat, img);
+        cv::Mat *img = SG_GET_IMAGE(image);
 
         char *title;
         Data_Get_Struct(self, char, title);

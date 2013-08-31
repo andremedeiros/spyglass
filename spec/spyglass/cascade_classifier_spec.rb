@@ -13,7 +13,7 @@ describe Spyglass::CascadeClassifier do
 
   describe '.detect' do
     it 'should return an array of Spyglass::Rect' do
-      rects = classifier.detect(lena)
+      rects = classifier.detect(lena, scale_factor: 1.3)
 
       expect( rects ).to be_a Array
 

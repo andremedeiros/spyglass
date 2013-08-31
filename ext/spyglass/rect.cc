@@ -43,7 +43,7 @@ namespace Spyglass {
       Check_Type(width, T_FIXNUM);
       Check_Type(height, T_FIXNUM);
 
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
 
       rect->x = FIX2INT(x);
       rect->y = FIX2INT(y);
@@ -54,71 +54,71 @@ namespace Spyglass {
     }
 
     static VALUE rb_get_area(VALUE self) {
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
       return INT2FIX(rect->area());
     }
 
     static VALUE rb_get_height(VALUE self) {
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
       return INT2FIX(rect->height);
     }
 
     static VALUE rb_set_height(VALUE self, VALUE height) {
       Check_Type(height, T_FIXNUM);
 
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
 
       rect->height = FIX2INT(height);
       return height;
     }
 
     static VALUE rb_get_point(VALUE self) {
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
       return Spyglass::Point::point_from_cvrect(rect);
     }
 
     static VALUE rb_get_size(VALUE self) {
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
       return Spyglass::Size::size_from_cvrect(rect);
     }
 
     static VALUE rb_get_width(VALUE self) {
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
       return INT2FIX(rect->width);
     }
 
     static VALUE rb_set_width(VALUE self, VALUE width) {
       Check_Type(width, T_FIXNUM);
 
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
 
       rect->width = FIX2INT(width);
       return width;
     }
 
     static VALUE rb_get_x(VALUE self) {
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
       return INT2FIX(rect->x);
     }
 
     static VALUE rb_set_x(VALUE self, VALUE x) {
       Check_Type(x, T_FIXNUM);
 
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
 
       rect->x = FIX2INT(x);
       return x;
     }
 
     static VALUE rb_get_y(VALUE self) {
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
       return INT2FIX(rect->y);
     }
 
     static VALUE rb_set_y(VALUE self, VALUE y) {
       Check_Type(y, T_FIXNUM);
 
-      SG_GET_RECT(self, rect);
+      cv::Rect *rect = SG_GET_RECT(self);
 
       rect->y = FIX2INT(y);
       return y;

@@ -11,7 +11,7 @@ namespace Spyglass {
     static VALUE rb_alloc(VALUE self);
     static void rb_free(cv::CascadeClassifier *classifier);
     static VALUE rb_initialize(VALUE self, VALUE src);
-    static VALUE rb_detect(VALUE self, VALUE image);
+    static VALUE rb_detect(int argc, VALUE *argv, VALUE self);
   }
 }
 

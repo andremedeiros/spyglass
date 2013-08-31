@@ -34,7 +34,7 @@ namespace Spyglass {
       Check_Type(x, T_FIXNUM);
       Check_Type(y, T_FIXNUM);
 
-      SG_GET_POINT(self, point)
+      cv::Point *point = SG_GET_POINT(self);
 
       point->x = FIX2INT(x);
       point->y = FIX2INT(y);
@@ -43,30 +43,28 @@ namespace Spyglass {
     }
 
     static VALUE rb_get_x(VALUE self) {
-      SG_GET_POINT(self, point);
-
+      cv::Point *point = SG_GET_POINT(self);
       return INT2FIX(point->x);
     }
 
     static VALUE rb_set_x(VALUE self, VALUE x) {
       Check_Type(x, T_FIXNUM);
 
-      SG_GET_POINT(self, point);
+      cv::Point *point = SG_GET_POINT(self);
 
       point->x = FIX2INT(x);
       return x;
     }
 
     static VALUE rb_get_y(VALUE self) {
-      SG_GET_POINT(self, point);
-
+      cv::Point *point = SG_GET_POINT(self);
       return INT2FIX(point->y);
     }
 
     static VALUE rb_set_y(VALUE self, VALUE y) {
       Check_Type(y, T_FIXNUM);
 
-      SG_GET_POINT(self, point);
+      cv::Point *point = SG_GET_POINT(self);
 
       point->y = FIX2INT(y);
       return y;

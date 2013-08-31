@@ -11,7 +11,7 @@ namespace Spyglass {
       rb_define_method(CascadeClassifierClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), 1);
 
       // Instance methods
-      rb_define_method(CascadeClassifierClass, "detect", RUBY_METHOD_FUNC(rb_detect), 1);
+      rb_define_method(CascadeClassifierClass, "detect", RUBY_METHOD_FUNC(rb_detect), -1);
     }
 
     VALUE get_ruby_class() {
@@ -31,23 +31,31 @@ namespace Spyglass {
     static VALUE rb_initialize(VALUE self, VALUE src) {
       Check_Type(src, T_STRING);
 
-      SG_GET_CLASSIFIER(self, classifier);
+      cv::CascadeClassifier *classifier = SG_GET_CLASSIFIER(self);
 
       classifier->load(StringValueCStr(src));
 
       return self;
     }
 
-    static VALUE rb_detect(VALUE self, VALUE image) {
+    static VALUE rb_detect(int argc, VALUE *argv, VALUE self) {
+      VALUE image, opts;
+      rb_scan_args(argc, argv, "11", &image, &opts);
+
       if(CLASS_OF(image) != Spyglass::Image::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)", rb_obj_classname(image));
       }
 
-      SG_GET_CLASSIFIER(self, classifier);
-      SG_GET_IMAGE(image, img);
+      cv::CascadeClassifier *classifier = SG_GET_CLASSIFIER(self);
+      cv::Mat *img                      = SG_GET_IMAGE(image);
+
+      SG_OPTION(opts, double,     scale_factor,   1.1,            NUM2DBL);
+      SG_OPTION(opts, int,        min_neighbors,  3,              NUM2INT);
+      SG_OPTION(opts, cv::Size *, min_size,       new cv::Size(), SG_GET_SIZE);
+      SG_OPTION(opts, cv::Size *, max_size,       new cv::Size(), SG_GET_SIZE);
 
       std::vector<cv::Rect> results;
-      classifier->detectMultiScale(*img, results);
+      classifier->detectMultiScale(*img, results, scale_factor, min_neighbors, 0, *min_size, *max_size);
 
       VALUE result = rb_ary_new2(results.size());
       for(size_t i = 0; i < results.size(); i++) {
