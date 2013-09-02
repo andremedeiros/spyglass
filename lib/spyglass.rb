@@ -1,5 +1,5 @@
 require "spyglass/version"
+require "spyglass/spyglass"
 
 module Spyglass
-  # Your code goes here...
 end
