@@ -206,8 +206,8 @@ namespace Spyglass {
       cv::Mat bw_img;
       cvtColor(*img, bw_img, CV_BGR2GRAY);
       std::vector<std::vector<cv::Point> > contours;
-
-      cv::findContours(bw, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+      cv::Canny(bw_img, bw_img, 100, 200, 3);
+      cv::findContours(bw_img, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
       return Contour::from_contour_vector(contours);
     }
