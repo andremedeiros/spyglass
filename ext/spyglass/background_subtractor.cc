@@ -61,9 +61,12 @@ namespace Spyglass {
 
       rate = -1.0;
 
-      if(RTEST(learn_rate) && TYPE(learn_rate) != T_FLOAT && TYPE(learn_rate) != T_FIXNUM) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Float or Fixnum)",
-            rb_obj_classname(learn_rate));
+      if(RTEST(learn_rate)) {
+        if(TYPE(learn_rate) != T_FLOAT && TYPE(learn_rate) != T_FIXNUM)
+          rb_raise(rb_eTypeError, "wrong argument type %s (expected Float or Fixnum)",
+              rb_obj_classname(learn_rate));
+
+        rate = NUM2DBL(learn_rate);
       }
 
       cv::BackgroundSubtractorMOG2 *bg  = SG_GET_BG_SUBTRACTOR(self);
