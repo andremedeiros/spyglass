@@ -7,7 +7,7 @@ namespace Spyglass {
     void define_ruby_class() {
       VideoCaptureClass = rb_define_class_under(Spyglass::get_ruby_module(), "VideoCapture", rb_cObject);
       rb_define_alloc_func(VideoCaptureClass, rb_alloc);
-      rb_define_method(VideoCaptureClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), 1);
+      rb_define_method(VideoCaptureClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), -1);
 
       // Instance methods
       rb_define_method(VideoCaptureClass, ">>", RUBY_METHOD_FUNC(rb_capture), 1);
@@ -32,8 +32,15 @@ namespace Spyglass {
       delete cap;
     }
 
-    static VALUE rb_initialize(VALUE self, VALUE src) {
+    static VALUE rb_initialize(int argc, VALUE *argv, VALUE self) {
+      VALUE src, opts;
+      rb_scan_args(argc, argv, "11", &src, &opts);
+
       cv::VideoCapture *cap = SG_GET_VIDEO_CAPTURE(self);
+
+      SG_OPTION(opts, double, width,   0, NUM2DBL);
+      SG_OPTION(opts, double, height,  0, NUM2DBL);
+      SG_OPTION(opts, double, fps,     0, NUM2DBL);
 
       int type = TYPE(src);
 
@@ -48,6 +55,15 @@ namespace Spyglass {
           rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum or String)",
               rb_obj_classname(src));
       }
+
+      if(width > 0)
+        cap->set(CV_CAP_PROP_FRAME_WIDTH, width);
+
+      if(height > 0)
+        cap->set(CV_CAP_PROP_FRAME_HEIGHT, height);
+
+      if(fps > 0)
+        cap->set(CV_CAP_PROP_FPS, fps);
 
       return self;
     }

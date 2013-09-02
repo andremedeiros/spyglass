@@ -10,7 +10,7 @@ namespace Spyglass {
 
     static VALUE rb_alloc(VALUE self);
     static void rb_free(cv::VideoCapture *cap);
-    static VALUE rb_initialize(VALUE self, VALUE src);
+    static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);
     static VALUE rb_capture(VALUE self, VALUE dest);
     static VALUE rb_is_open(VALUE self);
     static VALUE rb_stop(VALUE self);
