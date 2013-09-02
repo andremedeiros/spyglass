@@ -129,7 +129,9 @@ namespace Spyglass {
         ctrs.push_back(Spyglass::Contour::to_value_vector(contour));
       }
 
-      cv::drawContours(*img, ctrs, -1, cv::Scalar(255, 255, 255), CV_FILLED);
+      for(int idx = 0; idx < ctrs.size(); idx++)
+        cv::drawContours(*img, ctrs, idx, cv::Scalar(0, 0, 0));
+
       return self;
     }
 
@@ -201,6 +203,13 @@ namespace Spyglass {
 
     static VALUE rb_get_contours(VALUE self) {
       cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Mat bw_img;
+      cvtColor(*img, bw_img, CV_BGR2GRAY);
+      std::vector<std::vector<cv::Point> > contours;
+
+      cv::findContours(bw, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
+      return Contour::from_contour_vector(contours);
     }
 
     static VALUE rb_crop(VALUE self, VALUE rect) {

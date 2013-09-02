@@ -68,5 +68,25 @@ namespace Spyglass {
 
       return result;
     }
+    
+    VALUE from_point_vector(std::vector<cv::Point> contours) {
+      std::vector<cv::Point *> *ctrs = new std::vector<cv::Point *>();
+      
+      for(int idx = 0; idx < contours.size(); idx++) {
+        ctrs->push_back(new cv::Point(contours[idx]));
+      }
+      
+      return Data_Wrap_Struct(ContourClass, NULL, rb_free, ctrs);
+    }
+    
+    VALUE from_contour_vector(std::vector<std::vector<cv::Point> > contours) {
+      VALUE ctrs = rb_ary_new2(contours.size());
+      for(int idx = 0; idx < contours.size(); idx++) {
+        rb_ary_store(ctrs, idx, from_point_vector(contours[idx]));
+      }
+      
+      return ctrs;
+    }
+    
   }
 }
