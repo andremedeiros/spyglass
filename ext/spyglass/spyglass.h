@@ -1,5 +1,5 @@
-#ifndef SPYGLASS_OPENCV_H_
-#define SPYGLASS_OPENCV_H_
+#ifndef SPYGLASS_SPYGLASS_H_
+#define SPYGLASS_SPYGLASS_H_
 
 #include <ruby.h>
 
@@ -23,4 +23,4 @@ namespace Spyglass {
 
 extern "C" void Init_spyglass();
 
-#endif // SPYGLASS_OPENCV_H_
+#endif // SPYGLASS_SPYGLASS_H_

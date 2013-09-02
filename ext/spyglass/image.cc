@@ -51,7 +51,8 @@ namespace Spyglass {
       rb_scan_args(argc, argv, "01", &iterations);
 
       if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)", rb_obj_classname(iterations));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)",
+            rb_obj_classname(iterations));
       }
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
@@ -68,7 +69,8 @@ namespace Spyglass {
       rb_scan_args(argc, argv, "01", &iterations);
 
       if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)", rb_obj_classname(iterations));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)",
+            rb_obj_classname(iterations));
       }
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
@@ -81,7 +83,8 @@ namespace Spyglass {
 
     static VALUE rb_draw_rectangle(VALUE self, VALUE rect) {
       if(CLASS_OF(rect) != Spyglass::Rect::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)", rb_obj_classname(rect));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
+            rb_obj_classname(rect));
       }
 
       cv::Mat *img    = SG_GET_IMAGE(self);
@@ -98,7 +101,8 @@ namespace Spyglass {
       rb_scan_args(argc, argv, "01", &iterations);
 
       if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)", rb_obj_classname(iterations));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)",
+            rb_obj_classname(iterations));
       }
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
@@ -115,7 +119,8 @@ namespace Spyglass {
       rb_scan_args(argc, argv, "01", &iterations);
 
       if(RTEST(iterations) && TYPE(iterations) != T_FIXNUM) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)", rb_obj_classname(iterations));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum)",
+            rb_obj_classname(iterations));
       }
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
@@ -144,7 +149,8 @@ namespace Spyglass {
 
     static VALUE rb_crop(VALUE self, VALUE rect) {
       if(!CLASS_OF(rect) == Spyglass::Rect::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)", rb_obj_classname(rect));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
+            rb_obj_classname(rect));
       }
 
       cv::Mat *img          = SG_GET_IMAGE(self);
@@ -156,7 +162,8 @@ namespace Spyglass {
 
     static VALUE rb_crop_inplace(VALUE self, VALUE rect) {
       if(!CLASS_OF(rect) == Spyglass::Rect::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)", rb_obj_classname(rect));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
+            rb_obj_classname(rect));
       }
 
       cv::Mat *img          = SG_GET_IMAGE(self);

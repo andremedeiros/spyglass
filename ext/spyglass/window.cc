@@ -67,7 +67,8 @@ namespace Spyglass {
 
       static VALUE rb_show(VALUE self, VALUE image) {
         if(!CLASS_OF(image) == Spyglass::Image::get_ruby_class()) {
-          rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)", rb_obj_classname(image));
+          rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
+              rb_obj_classname(image));
         }
 
         cv::Mat *img = SG_GET_IMAGE(image);

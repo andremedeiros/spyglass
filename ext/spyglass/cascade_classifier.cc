@@ -43,7 +43,8 @@ namespace Spyglass {
       rb_scan_args(argc, argv, "11", &image, &opts);
 
       if(CLASS_OF(image) != Spyglass::Image::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)", rb_obj_classname(image));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
+            rb_obj_classname(image));
       }
 
       cv::CascadeClassifier *classifier = SG_GET_CLASSIFIER(self);

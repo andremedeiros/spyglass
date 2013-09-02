@@ -15,4 +15,4 @@ namespace Spyglass {
   }
 }
 
-#endif
+#endif // SPYGLASS_BACKGROUND_SUBTRACTOR_H_

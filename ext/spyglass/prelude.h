@@ -8,10 +8,6 @@
 } while (0);
 #endif
 
-#define SG_GET(obj, type, var) \
-  type *var; \
-  Data_Get_Struct(obj, type, var);
-
 #define SG_GEN_GET_OBJECT_FUNCTION(func, type) \
   inline type *func(VALUE obj) { \
     type *ptr; \
@@ -21,10 +17,10 @@
 
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_BG_SUBTRACTOR,  cv::BackgroundSubtractorMOG2);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_CLASSIFIER,     cv::CascadeClassifier);
-SG_GEN_GET_OBJECT_FUNCTION(SG_GET_SIZE,           cv::Size);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_IMAGE,          cv::Mat);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_POINT,          cv::Point);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_RECT,           cv::Rect);
+SG_GEN_GET_OBJECT_FUNCTION(SG_GET_SIZE,           cv::Size);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_VIDEO_CAPTURE,  cv::VideoCapture);
 
 #define SG_OPTION( opts, type, key, default, expr) \

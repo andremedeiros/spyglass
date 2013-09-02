@@ -20,4 +20,4 @@ namespace Spyglass {
   }
 }
 
-#endif
+#endif // SPYGLASS_POINT_H_

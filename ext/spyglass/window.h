@@ -1,5 +1,5 @@
-#ifndef SPYGLASS_GUI_WINDOW_H_
-#define SPYGLASS_GUI_WINDOW_H_
+#ifndef SPYGLASS_WINDOW_H_
+#define SPYGLASS_WINDOW_H_
 
 #include "spyglass.h"
 
@@ -20,4 +20,4 @@ namespace Spyglass {
   }
 }
 
-#endif // SPYGLASS_GUI_WINDOW_H_
+#endif // SPYGLASS_WINDOW_H_

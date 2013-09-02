@@ -45,7 +45,8 @@ namespace Spyglass {
           cap->open(StringValueCStr(src));
           break;
         default:
-          rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum or String)", rb_obj_classname(src));
+          rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum or String)",
+              rb_obj_classname(src));
       }
 
       return self;
@@ -53,7 +54,8 @@ namespace Spyglass {
 
     static VALUE rb_capture(VALUE self, VALUE dest) {
       if(CLASS_OF(dest) != Spyglass::Image::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)", rb_obj_classname(dest));
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
+            rb_obj_classname(dest));
       }
 
       cv::VideoCapture *cap = SG_GET_VIDEO_CAPTURE(self);
