@@ -15,6 +15,7 @@ namespace Spyglass {
 
       // Instance methods
       rb_define_method(ImageClass, "cols", RUBY_METHOD_FUNC(rb_get_cols), 0);
+      rb_define_method(ImageClass, "copy!", RUBY_METHOD_FUNC(rb_copy_inplace), -1);
       rb_define_method(ImageClass, "crop", RUBY_METHOD_FUNC(rb_crop), 1);
       rb_define_method(ImageClass, "crop!", RUBY_METHOD_FUNC(rb_crop_inplace), 1);
       rb_define_method(ImageClass, "dilate", RUBY_METHOD_FUNC(rb_dilate), -1);
@@ -45,6 +46,33 @@ namespace Spyglass {
       return self;
     }
 
+    static VALUE rb_copy_inplace(int argc, VALUE *argv, VALUE self) {
+      VALUE src, mask;
+      rb_scan_args(argc, argv, "11", &src, &mask);
+
+      if(CLASS_OF(src) != Spyglass::Image::get_ruby_class()) {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
+            rb_obj_classname(src));
+      }
+
+      if(RTEST(mask) && CLASS_OF(mask) != Spyglass::Image::get_ruby_class()) {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
+            rb_obj_classname(mask));
+      }
+
+      cv::Mat *dest = SG_GET_IMAGE(self);
+      cv::Mat *_src = SG_GET_IMAGE(src);
+
+      if(RTEST(mask)) {
+        cv::Mat *_mask = SG_GET_IMAGE(mask);
+        _src->copyTo(*dest, *_mask);
+      } else {
+        _src->copyTo(*dest);
+      }
+
+      Data_Set_Struct(self, dest);
+      return self;
+    }
 
     static VALUE rb_dilate(int argc, VALUE *argv, VALUE self) {
       VALUE iterations;
