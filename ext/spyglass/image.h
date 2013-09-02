@@ -16,11 +16,13 @@ namespace Spyglass {
     static VALUE rb_crop_inplace(VALUE self, VALUE rect);
     static VALUE rb_dilate(int argc, VALUE *argv, VALUE self);
     static VALUE rb_dilate_inplace(int argc, VALUE *argv, VALUE self);
+    static VALUE rb_draw_contours(VALUE self, VALUE contours);
     static VALUE rb_draw_rectangle(VALUE self, VALUE rect);
     static VALUE rb_erode(int argc, VALUE *argv, VALUE self);
     static VALUE rb_erode_inplace(int argc, VALUE *argv, VALUE self);
     static VALUE rb_load(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_get_cols(VALUE self);
+    static VALUE rb_get_contours(VALUE self);
     static VALUE rb_get_rows(VALUE self);
     static VALUE rb_get_size(VALUE self);
     static VALUE rb_write(VALUE self, VALUE filename);

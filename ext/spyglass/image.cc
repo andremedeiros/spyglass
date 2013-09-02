@@ -15,11 +15,13 @@ namespace Spyglass {
 
       // Instance methods
       rb_define_method(ImageClass, "cols", RUBY_METHOD_FUNC(rb_get_cols), 0);
+      rb_define_method(ImageClass, "contours", RUBY_METHOD_FUNC(rb_get_contours), 0);
       rb_define_method(ImageClass, "copy!", RUBY_METHOD_FUNC(rb_copy_inplace), -1);
       rb_define_method(ImageClass, "crop", RUBY_METHOD_FUNC(rb_crop), 1);
       rb_define_method(ImageClass, "crop!", RUBY_METHOD_FUNC(rb_crop_inplace), 1);
       rb_define_method(ImageClass, "dilate", RUBY_METHOD_FUNC(rb_dilate), -1);
       rb_define_method(ImageClass, "dilate!", RUBY_METHOD_FUNC(rb_dilate_inplace), -1);
+      rb_define_method(ImageClass, "draw_contours", RUBY_METHOD_FUNC(rb_draw_contours), 1);
       rb_define_method(ImageClass, "draw_rectangle", RUBY_METHOD_FUNC(rb_draw_rectangle), 1);
       rb_define_method(ImageClass, "erode", RUBY_METHOD_FUNC(rb_erode), -1);
       rb_define_method(ImageClass, "erode!", RUBY_METHOD_FUNC(rb_erode_inplace), -1);
@@ -109,6 +111,30 @@ namespace Spyglass {
       return self;
     }
 
+    static VALUE rb_draw_contours(VALUE self, VALUE contours) {
+      if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) == Spyglass::Contour::get_ruby_class())
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Array or Spyglass::Contour)",
+            rb_obj_classname(contours));
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+      std::vector<std::vector<cv::Point> > ctrs;
+
+      if(TYPE(contours) == T_ARRAY) {
+        for(int idx = 0; idx < RARRAY_LEN(contours); idx++) {
+          std::vector<cv::Point *> *contour = SG_GET_CONTOUR(rb_ary_entry(contours, idx));
+          ctrs.push_back(Spyglass::Contour::to_value_vector(contour));
+        }
+      } else {
+        std::vector<cv::Point *> *contour = SG_GET_CONTOUR(contours);
+        ctrs.push_back(Spyglass::Contour::to_value_vector(contour));
+      }
+
+      for(int idx = 0; idx < ctrs.size(); idx++)
+        cv::drawContours(*img, ctrs, idx, cv::Scalar(0, 0, 0));
+
+      return self;
+    }
+
     static VALUE rb_draw_rectangle(VALUE self, VALUE rect) {
       if(CLASS_OF(rect) != Spyglass::Rect::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
@@ -173,6 +199,17 @@ namespace Spyglass {
     static VALUE rb_get_cols(VALUE self) {
       cv::Mat *img = SG_GET_IMAGE(self);
       return INT2FIX(img->cols);
+    }
+
+    static VALUE rb_get_contours(VALUE self) {
+      cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Mat bw_img;
+      cvtColor(*img, bw_img, CV_BGR2GRAY);
+      std::vector<std::vector<cv::Point> > contours;
+      cv::Canny(bw_img, bw_img, 100, 200, 3);
+      cv::findContours(bw_img, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
+      return Contour::from_contour_vector(contours);
     }
 
     static VALUE rb_crop(VALUE self, VALUE rect) {
