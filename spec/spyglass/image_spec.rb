@@ -78,4 +78,18 @@ describe Spyglass::Image do
       end
     end
   end
+
+  describe '#copy!' do
+    it 'should copy the image inplace' do
+      im = Spyglass::Image.new
+
+      expect( im.rows ).to eq(0)
+      expect( im.cols ).to eq(0)
+
+      im.copy!(lena)
+
+      expect( im.rows ).to eq(512)
+      expect( im.cols ).to eq(512)
+    end
+  end
 end
