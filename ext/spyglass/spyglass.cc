@@ -17,6 +17,8 @@ namespace Spyglass {
 extern "C" {
   void Init_spyglass() {
     Spyglass::define_ruby_module();
+    Spyglass::ColorSpace::define_ruby_module();
+
     Spyglass::BackgroundSubtractor::define_ruby_class();
     Spyglass::CascadeClassifier::define_ruby_class();
     Spyglass::Contour::define_ruby_class();

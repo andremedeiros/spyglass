@@ -8,6 +8,7 @@
 #include "prelude.h"
 #include "background_subtractor.h"
 #include "cascade_classifier.h"
+#include "color_space.h"
 #include "contour.h"
 #include "image.h"
 #include "point.h"

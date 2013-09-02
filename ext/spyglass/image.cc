@@ -14,8 +14,12 @@ namespace Spyglass {
       rb_define_singleton_method(ImageClass, "load", RUBY_METHOD_FUNC(rb_load), -1);
 
       // Instance methods
+      rb_define_method(ImageClass, "canny", RUBY_METHOD_FUNC(rb_canny), 2);
+      rb_define_method(ImageClass, "canny!", RUBY_METHOD_FUNC(rb_canny_inplace), 2);
       rb_define_method(ImageClass, "cols", RUBY_METHOD_FUNC(rb_get_cols), 0);
       rb_define_method(ImageClass, "contours", RUBY_METHOD_FUNC(rb_get_contours), 0);
+      rb_define_method(ImageClass, "convert", RUBY_METHOD_FUNC(rb_convert), 1);
+      rb_define_method(ImageClass, "convert!", RUBY_METHOD_FUNC(rb_convert_inplace), 1);
       rb_define_method(ImageClass, "copy!", RUBY_METHOD_FUNC(rb_copy_inplace), -1);
       rb_define_method(ImageClass, "crop", RUBY_METHOD_FUNC(rb_crop), 1);
       rb_define_method(ImageClass, "crop!", RUBY_METHOD_FUNC(rb_crop_inplace), 1);
@@ -47,6 +51,28 @@ namespace Spyglass {
     static VALUE rb_initialize(VALUE self) {
       return self;
     }
+
+    static VALUE rb_canny(VALUE self, VALUE threshold1, VALUE threshold2) {
+      Check_Type(threshold1, T_FIXNUM);
+      Check_Type(threshold2, T_FIXNUM);
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Mat canny;
+
+      cv::Canny(*img, canny, NUM2INT(threshold1), NUM2INT(threshold2));
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, new cv::Mat(canny));
+    }
+
+    static VALUE rb_canny_inplace(VALUE self, VALUE threshold1, VALUE threshold2) {
+      Check_Type(threshold1, T_FIXNUM);
+      Check_Type(threshold2, T_FIXNUM);
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+
+      cv::Canny(*img, *img, NUM2INT(threshold1), NUM2INT(threshold2));
+      return self;
+    }
+
 
     static VALUE rb_copy_inplace(int argc, VALUE *argv, VALUE self) {
       VALUE src, mask;
@@ -203,13 +229,31 @@ namespace Spyglass {
 
     static VALUE rb_get_contours(VALUE self) {
       cv::Mat *img = SG_GET_IMAGE(self);
-      cv::Mat bw_img;
-      cvtColor(*img, bw_img, CV_BGR2GRAY);
+
       std::vector<std::vector<cv::Point> > contours;
-      cv::Canny(bw_img, bw_img, 100, 200, 3);
-      cv::findContours(bw_img, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+      cv::findContours(*img, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
       return Contour::from_contour_vector(contours);
+    }
+
+    static VALUE rb_convert(VALUE self, VALUE color_space) {
+      int code = NUM2INT(color_space);
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Mat new_img;
+
+      cvtColor(*img, new_img, color_space);
+      cv::Mat *_new_img = new cv::Mat(new_img);
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, _new_img);
+    }
+
+    static VALUE rb_convert_inplace(VALUE self, VALUE color_space) {
+      int code = NUM2INT(color_space);
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+
+      cvtColor(*img, *img, color_space);
+      return self;
     }
 
     static VALUE rb_crop(VALUE self, VALUE rect) {

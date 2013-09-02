@@ -1,4 +1,4 @@
-require 'spyglass/spyglass'
+require 'spyglass'
 require 'tmpdir'
 
 require 'matchers/close_to'

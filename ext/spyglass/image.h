@@ -11,6 +11,10 @@ namespace Spyglass {
     static VALUE rb_alloc(VALUE self);
     static void rb_free(cv::Mat *mat);
     static VALUE rb_initialize(VALUE self);
+    static VALUE rb_canny(VALUE self, VALUE threshold1, VALUE threshold2);
+    static VALUE rb_canny_inplace(VALUE self, VALUE threshold1, VALUE threshold2);
+    static VALUE rb_convert(VALUE self, VALUE color_space);
+    static VALUE rb_convert_inplace(VALUE self, VALUE color_space);
     static VALUE rb_copy_inplace(int argc, VALUE *argv, VALUE self);
     static VALUE rb_crop(VALUE self, VALUE rect);
     static VALUE rb_crop_inplace(VALUE self, VALUE rect);
