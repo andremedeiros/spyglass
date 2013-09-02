@@ -42,7 +42,7 @@ namespace Spyglass {
       VALUE image, opts;
       rb_scan_args(argc, argv, "11", &image, &opts);
 
-      if(CLASS_OF(image) != Spyglass::Image::get_ruby_class()) {
+      if(CLASS_OF(image) != Image::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(image));
       }
@@ -60,7 +60,7 @@ namespace Spyglass {
 
       VALUE result = rb_ary_new2(results.size());
       for(size_t i = 0; i < results.size(); i++) {
-        rb_ary_store(result, (long)i, Spyglass::Rect::rect_from_cvrect(&results[i]));
+        rb_ary_store(result, (long)i, Rect::from_cvrect(&results[i]));
       }
 
       return result;

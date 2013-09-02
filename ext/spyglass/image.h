@@ -27,7 +27,7 @@ namespace Spyglass {
     static VALUE rb_get_size(VALUE self);
     static VALUE rb_write(VALUE self, VALUE filename);
 
-    VALUE image_from_cvmat(cv::Mat *mat);
+    VALUE from_cvmat(cv::Mat *mat);
   }
 }
 

@@ -14,7 +14,7 @@ namespace Spyglass {
     static VALUE rb_get_rect(VALUE self);
 
     std::vector<cv::Point> to_value_vector(std::vector<cv::Point *> *contour);
-    VALUE from_point_vector(std::vector<cv::Point> contours);
+    VALUE from_cvpoint_vector(std::vector<cv::Point> contours);
     VALUE from_contour_vector(std::vector<std::vector<cv::Point> > contours);
   }
 }

@@ -69,7 +69,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_capture(VALUE self, VALUE dest) {
-      if(CLASS_OF(dest) != Spyglass::Image::get_ruby_class()) {
+      if(CLASS_OF(dest) != Image::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(dest));
       }

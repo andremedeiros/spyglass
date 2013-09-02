@@ -70,7 +70,7 @@ namespace Spyglass {
       return y;
     }
 
-    VALUE point_from_cvrect(cv::Rect *rect) {
+    VALUE from_cvrect(cv::Rect *rect) {
       cv::Point *point = new cv::Point(rect->tl());
       return Data_Wrap_Struct(PointClass, NULL, rb_free, point);
     }

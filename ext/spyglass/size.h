@@ -17,8 +17,8 @@ namespace Spyglass {
     static VALUE rb_set_width(VALUE self, VALUE width);
     static VALUE rb_set_height(VALUE self, VALUE height);
 
-    VALUE size_from_cvmat(cv::Mat *mat);
-    VALUE size_from_cvrect(cv::Rect *rect);
+    VALUE from_cvmat(cv::Mat *mat);
+    VALUE from_cvrect(cv::Rect *rect);
   }
 }
 

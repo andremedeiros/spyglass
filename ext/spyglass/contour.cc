@@ -40,7 +40,7 @@ namespace Spyglass {
       std::vector<cv::Point *> *contour = SG_GET_CONTOUR(self);
       for(int idx = 0; idx < RARRAY_LEN(points); idx++) {
         VALUE point = rb_ary_entry(points, idx);
-        if(CLASS_OF(point) != Spyglass::Point::get_ruby_class()) {
+        if(CLASS_OF(point) != Point::get_ruby_class()) {
           rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Point)",
               rb_obj_classname(point));
         }
@@ -56,7 +56,7 @@ namespace Spyglass {
       std::vector<cv::Point *> *contour = SG_GET_CONTOUR(self);
       cv::Rect rect = cv::boundingRect(to_value_vector(contour));
       cv::Rect *_rect = new cv::Rect(rect);
-      return Spyglass::Rect::rect_from_cvrect(_rect);
+      return Rect::from_cvrect(_rect);
     }
 
     std::vector<cv::Point> to_value_vector(std::vector<cv::Point *> *contour) {
@@ -69,7 +69,7 @@ namespace Spyglass {
       return result;
     }
     
-    VALUE from_point_vector(std::vector<cv::Point> contours) {
+    VALUE from_cvpoint_vector(std::vector<cv::Point> contours) {
       std::vector<cv::Point *> *ctrs = new std::vector<cv::Point *>();
       
       for(int idx = 0; idx < contours.size(); idx++) {
@@ -82,7 +82,7 @@ namespace Spyglass {
     VALUE from_contour_vector(std::vector<std::vector<cv::Point> > contours) {
       VALUE ctrs = rb_ary_new2(contours.size());
       for(int idx = 0; idx < contours.size(); idx++) {
-        rb_ary_store(ctrs, idx, from_point_vector(contours[idx]));
+        rb_ary_store(ctrs, idx, from_cvpoint_vector(contours[idx]));
       }
       
       return ctrs;

@@ -52,12 +52,12 @@ namespace Spyglass {
       VALUE src, mask;
       rb_scan_args(argc, argv, "11", &src, &mask);
 
-      if(CLASS_OF(src) != Spyglass::Image::get_ruby_class()) {
+      if(CLASS_OF(src) != ImageClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(src));
       }
 
-      if(RTEST(mask) && CLASS_OF(mask) != Spyglass::Image::get_ruby_class()) {
+      if(RTEST(mask) && CLASS_OF(mask) != ImageClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
             rb_obj_classname(mask));
       }
@@ -112,7 +112,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_draw_contours(VALUE self, VALUE contours) {
-      if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) == Spyglass::Contour::get_ruby_class())
+      if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) == Contour::get_ruby_class())
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Array or Spyglass::Contour)",
             rb_obj_classname(contours));
 
@@ -122,11 +122,11 @@ namespace Spyglass {
       if(TYPE(contours) == T_ARRAY) {
         for(int idx = 0; idx < RARRAY_LEN(contours); idx++) {
           std::vector<cv::Point *> *contour = SG_GET_CONTOUR(rb_ary_entry(contours, idx));
-          ctrs.push_back(Spyglass::Contour::to_value_vector(contour));
+          ctrs.push_back(Contour::to_value_vector(contour));
         }
       } else {
         std::vector<cv::Point *> *contour = SG_GET_CONTOUR(contours);
-        ctrs.push_back(Spyglass::Contour::to_value_vector(contour));
+        ctrs.push_back(Contour::to_value_vector(contour));
       }
 
       for(int idx = 0; idx < ctrs.size(); idx++)
@@ -136,7 +136,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_draw_rectangle(VALUE self, VALUE rect) {
-      if(CLASS_OF(rect) != Spyglass::Rect::get_ruby_class()) {
+      if(CLASS_OF(rect) != Rect::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
             rb_obj_classname(rect));
       }
@@ -213,7 +213,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_crop(VALUE self, VALUE rect) {
-      if(!CLASS_OF(rect) == Spyglass::Rect::get_ruby_class()) {
+      if(!CLASS_OF(rect) == Rect::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
             rb_obj_classname(rect));
       }
@@ -226,7 +226,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_crop_inplace(VALUE self, VALUE rect) {
-      if(!CLASS_OF(rect) == Spyglass::Rect::get_ruby_class()) {
+      if(!CLASS_OF(rect) == Rect::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
             rb_obj_classname(rect));
       }
@@ -249,7 +249,7 @@ namespace Spyglass {
 
     static VALUE rb_get_size(VALUE self) {
       cv::Mat *img = SG_GET_IMAGE(self);
-      return Spyglass::Size::size_from_cvmat(img);
+      return Size::from_cvmat(img);
     }
 
     static VALUE rb_write(VALUE self, VALUE filename) {
@@ -260,7 +260,7 @@ namespace Spyglass {
       return (res) ? Qtrue : Qfalse;
     }
 
-    VALUE image_from_cvmat(cv::Mat *mat) {
+    VALUE from_cvmat(cv::Mat *mat) {
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, mat);
     }
   }

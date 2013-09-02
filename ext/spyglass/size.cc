@@ -76,12 +76,12 @@ namespace Spyglass {
       return width;
     }
 
-    VALUE size_from_cvmat(cv::Mat *mat) {
+    VALUE from_cvmat(cv::Mat *mat) {
       cv::Size *size = new cv::Size(mat->size());
       return Data_Wrap_Struct(SizeClass, NULL, rb_free, size);
     }
 
-    VALUE size_from_cvrect(cv::Rect *rect) {
+    VALUE from_cvrect(cv::Rect *rect) {
       cv::Size *size = new cv::Size(rect->size());
       return Data_Wrap_Struct(SizeClass, NULL, rb_free, size);
     }

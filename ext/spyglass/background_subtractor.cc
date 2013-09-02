@@ -54,7 +54,7 @@ namespace Spyglass {
 
       rb_scan_args(argc, argv, "11", &image, &learn_rate);
 
-      if(CLASS_OF(image) != Spyglass::Image::get_ruby_class()) {
+      if(CLASS_OF(image) != Image::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(image));
       }
@@ -75,7 +75,7 @@ namespace Spyglass {
       cv::Mat *delta = new cv::Mat();
       (*bg)(*img, *delta, rate);
 
-      return Spyglass::Image::image_from_cvmat(delta);
+      return Image::from_cvmat(delta);
     }
   }
 }

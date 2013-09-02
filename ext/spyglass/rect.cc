@@ -74,12 +74,12 @@ namespace Spyglass {
 
     static VALUE rb_get_point(VALUE self) {
       cv::Rect *rect = SG_GET_RECT(self);
-      return Spyglass::Point::point_from_cvrect(rect);
+      return Point::from_cvrect(rect);
     }
 
     static VALUE rb_get_size(VALUE self) {
       cv::Rect *rect = SG_GET_RECT(self);
-      return Spyglass::Size::size_from_cvrect(rect);
+      return Size::from_cvrect(rect);
     }
 
     static VALUE rb_get_width(VALUE self) {
@@ -124,7 +124,7 @@ namespace Spyglass {
       return y;
     }
 
-    VALUE rect_from_cvrect(cv::Rect *rect) {
+    VALUE from_cvrect(cv::Rect *rect) {
       cv::Rect *_rect = new cv::Rect(*rect);
       return Data_Wrap_Struct(RectClass, NULL, rb_free, _rect);
     }
