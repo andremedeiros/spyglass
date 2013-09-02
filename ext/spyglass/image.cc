@@ -187,5 +187,9 @@ namespace Spyglass {
       bool res = cv::imwrite(StringValueCStr(filename), *img);
       return (res) ? Qtrue : Qfalse;
     }
+
+    VALUE image_from_cvmat(cv::Mat *mat) {
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, mat);
+    }
   }
 }

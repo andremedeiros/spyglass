@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "prelude.h"
+#include "background_subtractor.h"
 #include "cascade_classifier.h"
 #include "image.h"
 #include "point.h"

@@ -19,6 +19,7 @@
     return ptr; \
   }
 
+SG_GEN_GET_OBJECT_FUNCTION(SG_GET_BG_SUBTRACTOR,  cv::BackgroundSubtractorMOG2);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_CLASSIFIER,     cv::CascadeClassifier);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_SIZE,           cv::Size);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_IMAGE,          cv::Mat);
