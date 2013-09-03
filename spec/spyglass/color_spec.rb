@@ -39,5 +39,16 @@ describe Spyglass::Color do
         expect( color[4] ).to be_nil
       end
     end
+
+    describe '#zeros?' do
+      it 'should return true when the color is comprised only by zeros' do
+        zeros = Spyglass::Color.new(0, 0, 0, 0)
+        expect( zeros.zeros? ).to be_true
+      end
+
+      it 'should return false when the color has at least one element that is not zero' do
+        expect( color.zeros? ).to be_false
+      end
+    end
   end
 end
