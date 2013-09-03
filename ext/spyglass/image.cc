@@ -139,7 +139,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_draw_contours(VALUE self, VALUE contours) {
-      if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) == Contour::get_ruby_class())
+      if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) != Contour::get_ruby_class())
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Array or Spyglass::Contour)",
             rb_obj_classname(contours));
 
