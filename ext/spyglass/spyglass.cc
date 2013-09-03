@@ -21,6 +21,7 @@ extern "C" {
 
     Spyglass::BackgroundSubtractor::define_ruby_class();
     Spyglass::CascadeClassifier::define_ruby_class();
+    Spyglass::Color::define_ruby_class();
     Spyglass::Contour::define_ruby_class();
     Spyglass::Image::define_ruby_class();
     Spyglass::Point::define_ruby_class();
