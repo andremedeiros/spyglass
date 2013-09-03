@@ -10,7 +10,7 @@ namespace Spyglass {
 
     static VALUE rb_alloc(VALUE self);
     static void rb_free(cv::Mat *mat);
-    static VALUE rb_initialize(VALUE self);
+    static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);
     static VALUE rb_canny(VALUE self, VALUE threshold1, VALUE threshold2);
     static VALUE rb_canny_inplace(VALUE self, VALUE threshold1, VALUE threshold2);
     static VALUE rb_convert(VALUE self, VALUE color_space);
@@ -26,6 +26,8 @@ namespace Spyglass {
     static VALUE rb_erode_inplace(int argc, VALUE *argv, VALUE self);
     static VALUE rb_load(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_mean(int argc, VALUE *argv, VALUE klass);
+    static VALUE rb_threshold(int argc, VALUE *argv, VALUE klass);
+    static VALUE rb_threshold_inplace(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_get_cols(VALUE self);
     static VALUE rb_get_contours(VALUE self);
     static VALUE rb_get_rows(VALUE self);

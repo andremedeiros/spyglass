@@ -8,7 +8,7 @@ namespace Spyglass {
       // Class definition
       ImageClass = rb_define_class_under(Spyglass::get_ruby_module(), "Image", rb_cObject);
       rb_define_alloc_func(ImageClass, rb_alloc);
-      rb_define_method(ImageClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), 0);
+      rb_define_method(ImageClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), -1);
 
       // Class methods
       rb_define_singleton_method(ImageClass, "load", RUBY_METHOD_FUNC(rb_load), -1);
@@ -32,7 +32,13 @@ namespace Spyglass {
       rb_define_method(ImageClass, "mean", RUBY_METHOD_FUNC(rb_mean), -1);
       rb_define_method(ImageClass, "rows", RUBY_METHOD_FUNC(rb_get_rows), 0);
       rb_define_method(ImageClass, "size", RUBY_METHOD_FUNC(rb_get_size), 0);
+      rb_define_method(ImageClass, "threshold", RUBY_METHOD_FUNC(rb_threshold), -1);
+      rb_define_method(ImageClass, "threshold!", RUBY_METHOD_FUNC(rb_threshold_inplace), -1);
       rb_define_method(ImageClass, "write", RUBY_METHOD_FUNC(rb_write), 1);
+
+      // Constants
+      rb_define_const(ImageClass, "TYPE_8UC1", INT2NUM(CV_8UC1));
+      rb_define_const(ImageClass, "TYPE_8UC3", INT2NUM(CV_8UC3));
     }
 
     VALUE get_ruby_class() {
@@ -49,7 +55,30 @@ namespace Spyglass {
       delete img;
     }
 
-    static VALUE rb_initialize(VALUE self) {
+    static VALUE rb_initialize(int argc, VALUE *argv, VALUE self) {
+      if(argc == 0)
+        return self;
+
+      VALUE size, type;
+      rb_scan_args(argc, argv, "02", &size, &type);
+
+      if(RTEST(size) && CLASS_OF(size) != Size::get_ruby_class()) {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Size",
+            rb_obj_classname(size));
+      }
+
+      if(RTEST(type))
+        Check_Type(type, T_FIXNUM);
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+      rb_free(img);
+
+      cv::Size *_size = RTEST(size) ? SG_GET_SIZE(size) : new cv::Size();
+      int _type       = RTEST(type) ? NUM2INT(type) : CV_8UC3;
+
+      img = new cv::Mat(*_size, NUM2INT(type));
+      Data_Set_Struct(self, img);
+
       return self;
     }
 
@@ -74,7 +103,6 @@ namespace Spyglass {
       return self;
     }
 
-
     static VALUE rb_copy_inplace(int argc, VALUE *argv, VALUE self) {
       VALUE src, mask;
       rb_scan_args(argc, argv, "11", &src, &mask);
@@ -90,14 +118,18 @@ namespace Spyglass {
       }
 
       cv::Mat *dest = SG_GET_IMAGE(self);
-      cv::Mat *_src = SG_GET_IMAGE(src);
+      rb_free(dest);
 
+      cv::Mat *_src = SG_GET_IMAGE(src);
+      cv::Mat new_img;
       if(RTEST(mask)) {
         cv::Mat *_mask = SG_GET_IMAGE(mask);
-        _src->copyTo(*dest, *_mask);
+        _src->copyTo(new_img, *_mask);
       } else {
-        _src->copyTo(*dest);
+        _src->copyTo(new_img);
       }
+
+      dest = new cv::Mat(new_img);
 
       Data_Set_Struct(self, dest);
       return self;
@@ -157,7 +189,7 @@ namespace Spyglass {
       }
 
       for(int idx = 0; idx < ctrs.size(); idx++)
-        cv::drawContours(*img, ctrs, idx, cv::Scalar(0, 0, 0));
+        cv::drawContours(*img, ctrs, idx, cv::Scalar(255, 255, 255), CV_FILLED);
 
       return self;
     }
@@ -237,28 +269,30 @@ namespace Spyglass {
       return Contour::from_contour_vector(contours);
     }
 
-    static VALUE rb_convert(VALUE self, VALUE color_space) {
-      int code = NUM2INT(color_space);
+    cv::Mat *_convert(VALUE self, VALUE color_space) {
+      int code = FIX2INT(color_space);
 
       cv::Mat *img = SG_GET_IMAGE(self);
       cv::Mat new_img;
 
-      cvtColor(*img, new_img, color_space);
-      cv::Mat *_new_img = new cv::Mat(new_img);
-      return Data_Wrap_Struct(ImageClass, NULL, rb_free, _new_img);
+      cvtColor(*img, new_img, code);
+      rb_free(img);
+      return new cv::Mat(new_img);
+    }
+
+    static VALUE rb_convert(VALUE self, VALUE color_space) {
+      cv::Mat *img = _convert(self, color_space);
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
     }
 
     static VALUE rb_convert_inplace(VALUE self, VALUE color_space) {
-      int code = NUM2INT(color_space);
-
-      cv::Mat *img = SG_GET_IMAGE(self);
-
-      cvtColor(*img, *img, color_space);
+      cv::Mat *img = _convert(self, color_space);
+      Data_Set_Struct(self, img);
       return self;
     }
 
     static VALUE rb_crop(VALUE self, VALUE rect) {
-      if(!CLASS_OF(rect) == Rect::get_ruby_class()) {
+      if(CLASS_OF(rect) != Rect::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
             rb_obj_classname(rect));
       }
@@ -271,7 +305,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_crop_inplace(VALUE self, VALUE rect) {
-      if(!CLASS_OF(rect) == Rect::get_ruby_class()) {
+      if(CLASS_OF(rect) != Rect::get_ruby_class()) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
             rb_obj_classname(rect));
       }
@@ -292,7 +326,7 @@ namespace Spyglass {
       rb_scan_args(argc, argv, "01", &mask);
 
       if(RTEST(mask) && CLASS_OF(mask) != Image::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image",
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(mask));
       }
 
@@ -318,6 +352,52 @@ namespace Spyglass {
     static VALUE rb_get_size(VALUE self) {
       cv::Mat *img = SG_GET_IMAGE(self);
       return Size::from_cvmat(img);
+    }
+
+    cv::Mat *_threshold(int argc, VALUE *argv, VALUE self) {
+      VALUE threshold, replacement, opts;
+      rb_scan_args(argc, argv, "21", &threshold, &replacement, &opts);
+
+      double _threshold = 0;
+      if(TYPE(threshold) == T_FIXNUM || TYPE(threshold) == T_FLOAT)
+        _threshold = NUM2DBL(threshold);
+      else if(CLASS_OF(threshold) == Color::get_ruby_class()) {
+        cv::Scalar *color = SG_GET_COLOR(threshold);
+        _threshold = (*color)[0];
+      } else {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum, Float or Spyglass::Color)",
+            rb_obj_classname(threshold));
+      }
+
+      double _replacement = 0;
+      if(TYPE(replacement) == T_FIXNUM || TYPE(replacement) == T_FLOAT)
+        _replacement = NUM2DBL(replacement);
+      else if(CLASS_OF(replacement) == Color::get_ruby_class()) {
+        cv::Scalar *color = SG_GET_COLOR(replacement);
+        _replacement = (*color)[0];
+      } else {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum, Float or Spyglass::Color)",
+            rb_obj_classname(replacement));
+      }
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Mat new_img;
+
+      cv::threshold(*img, new_img, _threshold, _replacement, cv::THRESH_BINARY_INV);
+      rb_free(img);
+      return new cv::Mat(new_img);
+
+    }
+
+    static VALUE rb_threshold(int argc, VALUE *argv, VALUE self) {
+      cv::Mat *img = _threshold(argc, argv, self);
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
+    }
+
+    static VALUE rb_threshold_inplace(int argc, VALUE *argv, VALUE self) {
+      cv::Mat *img = _threshold(argc, argv, self);
+      Data_Set_Struct(self, img);
+      return self;
     }
 
     static VALUE rb_write(VALUE self, VALUE filename) {
