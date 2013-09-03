@@ -67,6 +67,12 @@ describe Spyglass::Image do
     end
   end
 
+  describe '#mean' do
+    it 'should return a Spyglass::Color' do
+      expect( lena.mean ).to be_a Spyglass::Color
+    end
+  end
+
   describe '#write' do
     it 'should write the image onto disk' do
       Dir.mktmpdir do |dir|

@@ -29,6 +29,7 @@ namespace Spyglass {
       rb_define_method(ImageClass, "draw_rectangle", RUBY_METHOD_FUNC(rb_draw_rectangle), 1);
       rb_define_method(ImageClass, "erode", RUBY_METHOD_FUNC(rb_erode), -1);
       rb_define_method(ImageClass, "erode!", RUBY_METHOD_FUNC(rb_erode_inplace), -1);
+      rb_define_method(ImageClass, "mean", RUBY_METHOD_FUNC(rb_mean), -1);
       rb_define_method(ImageClass, "rows", RUBY_METHOD_FUNC(rb_get_rows), 0);
       rb_define_method(ImageClass, "size", RUBY_METHOD_FUNC(rb_get_size), 0);
       rb_define_method(ImageClass, "write", RUBY_METHOD_FUNC(rb_write), 1);
@@ -284,6 +285,29 @@ namespace Spyglass {
 
       Data_Set_Struct(self, new_img);
       return self;
+    }
+
+    static VALUE rb_mean(int argc, VALUE *argv, VALUE self) {
+      VALUE mask;
+      rb_scan_args(argc, argv, "01", &mask);
+
+      if(RTEST(mask) && CLASS_OF(mask) != Image::get_ruby_class()) {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image",
+            rb_obj_classname(mask));
+      }
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Scalar mean;
+
+      if(RTEST(mask)) {
+        cv::Mat *_mask = SG_GET_IMAGE(mask);
+        mean = cv::mean(*img, *_mask);
+      } else {
+        mean = cv::mean(*img);
+      }
+
+      cv::Scalar *_mean = new cv::Scalar(mean);
+      return Color::from_cvscalar(_mean);
     }
 
     static VALUE rb_get_rows(VALUE self) {

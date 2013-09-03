@@ -25,6 +25,7 @@ namespace Spyglass {
     static VALUE rb_erode(int argc, VALUE *argv, VALUE self);
     static VALUE rb_erode_inplace(int argc, VALUE *argv, VALUE self);
     static VALUE rb_load(int argc, VALUE *argv, VALUE klass);
+    static VALUE rb_mean(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_get_cols(VALUE self);
     static VALUE rb_get_contours(VALUE self);
     static VALUE rb_get_rows(VALUE self);

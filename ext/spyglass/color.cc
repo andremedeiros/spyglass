@@ -63,5 +63,10 @@ namespace Spyglass {
 
       return ary;
     }
+
+    VALUE from_cvscalar(cv::Scalar *color) {
+      cv::Scalar *_color = new cv::Scalar(*color);
+      return Data_Wrap_Struct(ColorClass, NULL, rb_free, _color);
+    }
   }
 }
