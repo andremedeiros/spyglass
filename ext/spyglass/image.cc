@@ -86,11 +86,11 @@ namespace Spyglass {
       Check_Type(threshold1, T_FIXNUM);
       Check_Type(threshold2, T_FIXNUM);
 
-      cv::Mat *img = SG_GET_IMAGE(self);
-      cv::Mat canny;
+      cv::Mat *img    = SG_GET_IMAGE(self);
+      cv::Mat *canny  = new cv::Mat();
 
-      cv::Canny(*img, canny, NUM2INT(threshold1), NUM2INT(threshold2));
-      return Data_Wrap_Struct(ImageClass, NULL, rb_free, new cv::Mat(canny));
+      cv::Canny(*img, *canny, NUM2INT(threshold1), NUM2INT(threshold2));
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, canny);
     }
 
     static VALUE rb_canny_inplace(VALUE self, VALUE threshold1, VALUE threshold2) {
@@ -118,20 +118,15 @@ namespace Spyglass {
       }
 
       cv::Mat *dest = SG_GET_IMAGE(self);
-      rb_free(dest);
-
       cv::Mat *_src = SG_GET_IMAGE(src);
-      cv::Mat new_img;
+
       if(RTEST(mask)) {
         cv::Mat *_mask = SG_GET_IMAGE(mask);
-        _src->copyTo(new_img, *_mask);
+        _src->copyTo(*dest, *_mask);
       } else {
-        _src->copyTo(new_img);
+        _src->copyTo(*dest);
       }
 
-      dest = new cv::Mat(new_img);
-
-      Data_Set_Struct(self, dest);
       return self;
     }
 
@@ -220,9 +215,9 @@ namespace Spyglass {
 
       int iter = RTEST(iterations) ? FIX2INT(iterations) : 1;
 
-      cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Mat *img      = SG_GET_IMAGE(self);
+      cv::Mat *new_img  = new cv::Mat();
 
-      cv::Mat *new_img = new cv::Mat();
       cv::erode(*img, *new_img, cv::Mat(), cv::Point(-1, -1), iter);
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, new_img);
     }
@@ -249,7 +244,6 @@ namespace Spyglass {
       rb_scan_args(argc, argv, "10", &filename);
       Check_Type(filename, T_STRING);
 
-      // TODO: Find a better way to solve this.
       cv::Mat _img = cv::imread(StringValueCStr(filename));
       cv::Mat *img = new cv::Mat(_img);
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
@@ -269,25 +263,22 @@ namespace Spyglass {
       return Contour::from_contour_vector(contours);
     }
 
-    cv::Mat *_convert(VALUE self, VALUE color_space) {
+    static VALUE rb_convert(VALUE self, VALUE color_space) {
       int code = FIX2INT(color_space);
 
       cv::Mat *img = SG_GET_IMAGE(self);
-      cv::Mat new_img;
+      cv::Mat *new_img = new cv::Mat();
 
-      cvtColor(*img, new_img, code);
-      rb_free(img);
-      return new cv::Mat(new_img);
-    }
-
-    static VALUE rb_convert(VALUE self, VALUE color_space) {
-      cv::Mat *img = _convert(self, color_space);
+      cvtColor(*img, *new_img, code);
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
     }
 
     static VALUE rb_convert_inplace(VALUE self, VALUE color_space) {
-      cv::Mat *img = _convert(self, color_space);
-      Data_Set_Struct(self, img);
+      int code = FIX2INT(color_space);
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+
+      cvtColor(*img, *img, code);
       return self;
     }
 
@@ -313,6 +304,8 @@ namespace Spyglass {
       cv::Mat *img          = SG_GET_IMAGE(self);
       cv::Rect *boundaries  = SG_GET_RECT(rect);
 
+      // Here we allocate a new image, seen as it will take a lot less memory
+      // in the long run.
       cv::Mat *new_img = new cv::Mat();
       (*img)(*boundaries).copyTo(*new_img);
       rb_free(img);
@@ -354,49 +347,30 @@ namespace Spyglass {
       return Size::from_cvmat(img);
     }
 
-    cv::Mat *_threshold(int argc, VALUE *argv, VALUE self) {
+    static VALUE rb_threshold(int argc, VALUE *argv, VALUE self) {
       VALUE threshold, replacement, opts;
       rb_scan_args(argc, argv, "21", &threshold, &replacement, &opts);
 
-      double _threshold = 0;
-      if(TYPE(threshold) == T_FIXNUM || TYPE(threshold) == T_FLOAT)
-        _threshold = NUM2DBL(threshold);
-      else if(CLASS_OF(threshold) == Color::get_ruby_class()) {
-        cv::Scalar *color = SG_GET_COLOR(threshold);
-        _threshold = (*color)[0];
-      } else {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum, Float or Spyglass::Color)",
-            rb_obj_classname(threshold));
-      }
-
-      double _replacement = 0;
-      if(TYPE(replacement) == T_FIXNUM || TYPE(replacement) == T_FLOAT)
-        _replacement = NUM2DBL(replacement);
-      else if(CLASS_OF(replacement) == Color::get_ruby_class()) {
-        cv::Scalar *color = SG_GET_COLOR(replacement);
-        _replacement = (*color)[0];
-      } else {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Fixnum, Float or Spyglass::Color)",
-            rb_obj_classname(replacement));
-      }
+      Check_Type(threshold, T_FLOAT);
+      Check_Type(replacement, T_FLOAT);
 
       cv::Mat *img = SG_GET_IMAGE(self);
-      cv::Mat new_img;
+      cv::Mat *new_img = new cv::Mat();
 
-      cv::threshold(*img, new_img, _threshold, _replacement, cv::THRESH_BINARY_INV);
-      rb_free(img);
-      return new cv::Mat(new_img);
-
-    }
-
-    static VALUE rb_threshold(int argc, VALUE *argv, VALUE self) {
-      cv::Mat *img = _threshold(argc, argv, self);
+      cv::threshold(*img, *new_img, NUM2DBL(threshold), NUM2DBL(replacement), cv::THRESH_BINARY_INV);
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
     }
 
     static VALUE rb_threshold_inplace(int argc, VALUE *argv, VALUE self) {
-      cv::Mat *img = _threshold(argc, argv, self);
-      Data_Set_Struct(self, img);
+      VALUE threshold, replacement, opts;
+      rb_scan_args(argc, argv, "21", &threshold, &replacement, &opts);
+
+      Check_Type(threshold, T_FLOAT);
+      Check_Type(replacement, T_FLOAT);
+
+      cv::Mat *img = SG_GET_IMAGE(self);
+
+      cv::threshold(*img, *img, NUM2DBL(threshold), NUM2DBL(replacement), cv::THRESH_BINARY_INV);
       return self;
     }
 

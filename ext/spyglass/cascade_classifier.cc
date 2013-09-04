@@ -60,7 +60,8 @@ namespace Spyglass {
 
       VALUE result = rb_ary_new2(results.size());
       for(size_t i = 0; i < results.size(); i++) {
-        rb_ary_store(result, (long)i, Rect::from_cvrect(&results[i]));
+        cv::Rect *rect = new cv::Rect(results[i]);
+        rb_ary_store(result, (long)i, Rect::from_cvrect(rect));
       }
 
       return result;

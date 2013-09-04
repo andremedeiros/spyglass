@@ -31,7 +31,7 @@ namespace Spyglass {
 
     static VALUE rb_initialize(int argc, VALUE *argv, VALUE self) {
       if(argc < 1 || argc > 4)
-        rb_raise(rb_eArgError, "wrong number of arguments (%d for 1-4)", argc);
+        rb_raise(rb_eArgError, "wrong number of arguments (%d for 1..4)", argc);
 
       cv::Scalar *color = SG_GET_COLOR(self);
 
@@ -77,8 +77,7 @@ namespace Spyglass {
     }
 
     VALUE from_cvscalar(cv::Scalar *color) {
-      cv::Scalar *_color = new cv::Scalar(*color);
-      return Data_Wrap_Struct(ColorClass, NULL, rb_free, _color);
+      return Data_Wrap_Struct(ColorClass, NULL, rb_free, color);
     }
   }
 }

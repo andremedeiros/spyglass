@@ -125,8 +125,7 @@ namespace Spyglass {
     }
 
     VALUE from_cvrect(cv::Rect *rect) {
-      cv::Rect *_rect = new cv::Rect(*rect);
-      return Data_Wrap_Struct(RectClass, NULL, rb_free, _rect);
+      return Data_Wrap_Struct(RectClass, NULL, rb_free, rect);
     }
   }
 }
