@@ -8,6 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Spyglass::VERSION
   spec.authors       = ["André Medeiros"]
   spec.email         = ["me@andremedeiros.info"]
+  spec.extensions    = ["ext/spyglass/extconf.rb"]
   spec.description   = %q{OpenCV in ruby, made simple.}
   spec.summary       = %q{OpenCV in ruby, made simple.}
   spec.homepage      = "http://github.com/andremedeiros/spyglass"
