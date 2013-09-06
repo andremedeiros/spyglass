@@ -25,7 +25,7 @@ SG_GEN_GET_OBJECT_FUNCTION(SG_GET_RECT,           cv::Rect);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_SIZE,           cv::Size);
 SG_GEN_GET_OBJECT_FUNCTION(SG_GET_VIDEO_CAPTURE,  cv::VideoCapture);
 
-#define SG_OPTION( opts, type, key, default, expr) \
+#define SG_OPTION(opts, type, key, default, expr) \
   type key = default; \
   if(RTEST(opts)) { \
     Check_Type(opts, T_HASH); \

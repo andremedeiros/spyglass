@@ -13,6 +13,21 @@ describe Spyglass::Image do
     end
   end
 
+  describe '.zeros' do
+    it 'should require a size' do
+      expect { Spyglass::Image.zeros }.to raise_error ArgumentError
+
+      expect( Spyglass::Image.zeros(Spyglass::Size.new(20, 20)) ).to be_a Spyglass::Image
+    end
+
+    it 'should create an image filled with zeros' do
+      img = Spyglass::Image.zeros Spyglass::Size.new(50, 50)
+      mean = img.mean
+
+      expect( mean.zeros? ).to be_true
+    end
+  end
+
   describe 'accessors' do
     describe '#rows' do
       it 'should return the right number of rows for an image' do

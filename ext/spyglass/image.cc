@@ -12,6 +12,7 @@ namespace Spyglass {
 
       // Class methods
       rb_define_singleton_method(ImageClass, "load", RUBY_METHOD_FUNC(rb_load), -1);
+      rb_define_singleton_method(ImageClass, "zeros", RUBY_METHOD_FUNC(rb_zeros), -1);
 
       // Instance methods
       rb_define_method(ImageClass, "canny", RUBY_METHOD_FUNC(rb_canny), 2);
@@ -36,6 +37,8 @@ namespace Spyglass {
       rb_define_method(ImageClass, "size", RUBY_METHOD_FUNC(rb_get_size), 0);
       rb_define_method(ImageClass, "threshold", RUBY_METHOD_FUNC(rb_threshold), -1);
       rb_define_method(ImageClass, "threshold!", RUBY_METHOD_FUNC(rb_threshold_inplace), -1);
+      rb_define_method(ImageClass, "threshold_inv", RUBY_METHOD_FUNC(rb_threshold_inv), -1);
+      rb_define_method(ImageClass, "threshold_inv!", RUBY_METHOD_FUNC(rb_threshold_inv_inplace), -1);
       rb_define_method(ImageClass, "write", RUBY_METHOD_FUNC(rb_write), 1);
 
       // Constants
@@ -65,7 +68,7 @@ namespace Spyglass {
       rb_scan_args(argc, argv, "02", &size, &type);
 
       if(RTEST(size) && CLASS_OF(size) != Size::get_ruby_class()) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Size",
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Size)",
             rb_obj_classname(size));
       }
 
@@ -78,7 +81,7 @@ namespace Spyglass {
       cv::Size *_size = RTEST(size) ? SG_GET_SIZE(size) : new cv::Size();
       int _type       = RTEST(type) ? NUM2INT(type) : CV_8UC3;
 
-      img = new cv::Mat(*_size, NUM2INT(type));
+      img = new cv::Mat(*_size, _type);
       Data_Set_Struct(self, img);
 
       return self;
@@ -125,6 +128,10 @@ namespace Spyglass {
       }
 
       cv::Mat *dest = SG_GET_IMAGE(self);
+
+      rb_free(dest);
+      dest = new cv::Mat();
+
       cv::Mat *_src = SG_GET_IMAGE(src);
 
       if(RTEST(mask)) {
@@ -134,6 +141,8 @@ namespace Spyglass {
         _src->copyTo(*dest);
       }
 
+
+      Data_Set_Struct(self, dest);
       return self;
     }
 
@@ -399,7 +408,7 @@ namespace Spyglass {
       return Size::from_cvmat(img);
     }
 
-    cv::Mat *_do_threshold(int argc, VALUE *argv, VALUE self, bool inplace) {
+    cv::Mat *_do_threshold(int argc, VALUE *argv, VALUE self, bool inverse, bool inplace) {
       VALUE threshold, replacement, opts;
       rb_scan_args(argc, argv, "21", &threshold, &replacement, &opts);
 
@@ -409,22 +418,34 @@ namespace Spyglass {
       cv::Mat *img = SG_GET_IMAGE(self);
       cv::Mat *dest;
 
+      int method = inverse ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY;
+
       if(inplace)
         dest = img;
       else
         dest = new cv::Mat();
 
-      cv::threshold(*img, *dest, NUM2DBL(threshold), NUM2DBL(replacement), cv::THRESH_BINARY_INV);
+      cv::threshold(*img, *dest, NUM2DBL(threshold), NUM2DBL(replacement), method);
       return dest;
     }
 
     static VALUE rb_threshold(int argc, VALUE *argv, VALUE self) {
-      cv::Mat *img = _do_threshold(argc, argv, self, false);
+      cv::Mat *img = _do_threshold(argc, argv, self, false, false);
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
     }
 
     static VALUE rb_threshold_inplace(int argc, VALUE *argv, VALUE self) {
-      _do_threshold(argc, argv, self, true);
+      _do_threshold(argc, argv, self, false, true);
+      return self;
+    }
+
+    static VALUE rb_threshold_inv(int argc, VALUE *argv, VALUE self) {
+      cv::Mat *img = _do_threshold(argc, argv, self, true, false);
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
+    }
+
+    static VALUE rb_threshold_inv_inplace(int argc, VALUE *argv, VALUE self) {
+      _do_threshold(argc, argv, self, true, true);
       return self;
     }
 
@@ -434,6 +455,24 @@ namespace Spyglass {
       cv::Mat *img = SG_GET_IMAGE(self);
       bool res = cv::imwrite(StringValueCStr(filename), *img);
       return (res) ? Qtrue : Qfalse;
+    }
+
+    static VALUE rb_zeros(int argc, VALUE *argv, VALUE klass) {
+      VALUE size, type;
+      rb_scan_args(argc, argv, "11", &size, &type);
+
+      if(CLASS_OF(size) != Size::get_ruby_class()) {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Size)",
+            rb_obj_classname(size));
+      }
+
+      cv::Size *_size = SG_GET_SIZE(size);
+
+      int _type = RTEST(type) ? NUM2INT(type) : CV_8UC1;
+
+      cv::Mat zeros = cv::Mat::zeros(*_size, _type);
+      cv::Mat *img  = new cv::Mat(zeros);
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
     }
 
     VALUE from_cvmat(cv::Mat *mat) {
