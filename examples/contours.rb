@@ -13,7 +13,7 @@ canny.canny!(200, 300)
 
 result = Image.new
 result.copy!(apple)
-result.draw_contours(canny.contours)
+result.draw_contours(canny.contours, Color.new(255, 0, 0))
 
 result_window = GUI::Window.new "Contours"
 result_window.show(result)
