@@ -32,4 +32,6 @@ loop do
   result.copy!(frame, delta);
 
   window.show result
+
+  break if GUI::wait_key(10) > 0
 end
