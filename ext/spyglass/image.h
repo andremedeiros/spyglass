@@ -28,6 +28,8 @@ namespace Spyglass {
     static VALUE rb_fill_inplace(int argc, VALUE *argv, VALUE self);
     static VALUE rb_load(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_mean(int argc, VALUE *argv, VALUE klass);
+    static VALUE rb_resize(VALUE self, VALUE size);
+    static VALUE rb_resize_inplace(VALUE self, VALUE size);
     static VALUE rb_threshold(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_threshold_inplace(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_threshold_inv(int argc, VALUE *argv, VALUE klass);

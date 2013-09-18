@@ -33,6 +33,8 @@ namespace Spyglass {
       rb_define_method(ImageClass, "fill", RUBY_METHOD_FUNC(rb_fill), -1);
       rb_define_method(ImageClass, "fill!", RUBY_METHOD_FUNC(rb_fill_inplace), -1);
       rb_define_method(ImageClass, "mean", RUBY_METHOD_FUNC(rb_mean), -1);
+      rb_define_method(ImageClass, "resize", RUBY_METHOD_FUNC(rb_resize), 1);
+      rb_define_method(ImageClass, "resize!", RUBY_METHOD_FUNC(rb_resize_inplace), 1);
       rb_define_method(ImageClass, "rows", RUBY_METHOD_FUNC(rb_get_rows), 0);
       rb_define_method(ImageClass, "size", RUBY_METHOD_FUNC(rb_get_size), 0);
       rb_define_method(ImageClass, "threshold", RUBY_METHOD_FUNC(rb_threshold), -1);
@@ -407,6 +409,33 @@ namespace Spyglass {
       cv::Mat *img = SG_GET_IMAGE(self);
       return Size::from_cvmat(img);
     }
+
+    cv::Mat *_do_resize(VALUE self, VALUE size, bool inplace) {
+      cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Mat *dest;
+
+      cv::Size *_size = SG_GET_SIZE(size);
+
+      if(inplace)
+        dest = img;
+      else
+        dest = new cv::Mat();
+
+      cv::resize(*img, *dest, *_size);
+
+      return dest;
+    }
+
+    static VALUE rb_resize(VALUE self, VALUE size) {
+      cv::Mat *img = _do_resize(self, size, false);
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
+    }
+
+    static VALUE rb_resize_inplace(VALUE self, VALUE size) {
+      _do_resize(self, size, true);
+      return self;
+    }
+
 
     cv::Mat *_do_threshold(int argc, VALUE *argv, VALUE self, bool inverse, bool inplace) {
       VALUE threshold, replacement, opts;

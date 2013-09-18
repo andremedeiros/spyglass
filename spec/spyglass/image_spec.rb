@@ -113,4 +113,22 @@ describe Spyglass::Image do
       expect( im.cols ).to eq(512)
     end
   end
+
+  describe '#resize' do
+    it 'should resize the image' do
+      new_img = lena.resize(Spyglass::Size.new(1024, 1024))
+
+      expect( new_img.rows ).to eq(1024)
+      expect( new_img.cols ).to eq(1024)
+    end
+  end
+
+  describe '#resize!' do
+    it 'should resize the image in place' do
+      lena.resize!(Spyglass::Size.new(1024, 1024))
+
+      expect( lena.rows ).to eq(1024)
+      expect( lena.cols ).to eq(1024)
+    end
+  end
 end
