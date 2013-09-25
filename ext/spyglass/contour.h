@@ -11,6 +11,7 @@ namespace Spyglass {
     static VALUE rb_alloc(VALUE self);
     static void rb_free(std::vector<cv::Point *> *contour);
     static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);
+    static VALUE rb_get_corners(VALUE self);
     static VALUE rb_get_rect(VALUE self);
 
     std::vector<cv::Point> to_value_vector(std::vector<cv::Point *> *contour);

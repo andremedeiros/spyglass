@@ -41,6 +41,7 @@ namespace Spyglass {
       rb_define_method(ImageClass, "threshold!", RUBY_METHOD_FUNC(rb_threshold_inplace), -1);
       rb_define_method(ImageClass, "threshold_inv", RUBY_METHOD_FUNC(rb_threshold_inv), -1);
       rb_define_method(ImageClass, "threshold_inv!", RUBY_METHOD_FUNC(rb_threshold_inv_inplace), -1);
+      rb_define_method(ImageClass, "warp_perspective", RUBY_METHOD_FUNC(rb_warp_perspective), 2);
       rb_define_method(ImageClass, "write", RUBY_METHOD_FUNC(rb_write), 1);
 
       // Constants
@@ -476,6 +477,33 @@ namespace Spyglass {
     static VALUE rb_threshold_inv_inplace(int argc, VALUE *argv, VALUE self) {
       _do_threshold(argc, argv, self, true, true);
       return self;
+    }
+
+    static VALUE rb_warp_perspective(VALUE self, VALUE corners, VALUE size) {
+      std::vector<cv::Point> _corners = Contour::to_value_vector(SG_GET_CONTOUR(corners));
+      cv::Size *_size = SG_GET_SIZE(size);
+      cv::Mat *img    = SG_GET_IMAGE(self);
+      cv::Mat *result = new cv::Mat(_size->height, _size->width, CV_8UC3);
+
+      // Convert the corner points to `Point2f`, as `getPerspectiveTransform` only
+      // works with that kind of array.
+      std::vector<cv::Point2f> corner_pts;
+      for(int i = 0; i < _corners.size(); i++) {
+        cv::Point2f pt;
+        pt.x = _corners[i].x;
+        pt.y = _corners[i].y;
+        corner_pts.push_back(pt);
+      }
+
+	    std::vector<cv::Point2f> quad_pts;
+    	quad_pts.push_back(cv::Point2f(0, 0));
+    	quad_pts.push_back(cv::Point2f(_size->width, 0));
+	    quad_pts.push_back(cv::Point2f(_size->width, _size->height));
+	    quad_pts.push_back(cv::Point2f(0, _size->height));
+
+     	cv::Mat transmtx = cv::getPerspectiveTransform(corner_pts, quad_pts);
+    	cv::warpPerspective(*img, *result, transmtx, result->size());
+      return Data_Wrap_Struct(ImageClass, NULL, rb_free, result);
     }
 
     static VALUE rb_write(VALUE self, VALUE filename) {

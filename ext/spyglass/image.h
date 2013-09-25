@@ -38,6 +38,7 @@ namespace Spyglass {
     static VALUE rb_get_contours(VALUE self);
     static VALUE rb_get_rows(VALUE self);
     static VALUE rb_get_size(VALUE self);
+    static VALUE rb_warp_perspective(VALUE self, VALUE corners, VALUE size);
     static VALUE rb_write(VALUE self, VALUE filename);
     static VALUE rb_zeros(int argc, VALUE *argv, VALUE klass);
 
