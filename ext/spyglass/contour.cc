@@ -14,6 +14,9 @@ namespace Spyglass {
       rb_define_method(ContourClass, "corners", RUBY_METHOD_FUNC(rb_get_corners), 0);
       rb_define_method(ContourClass, "convex?", RUBY_METHOD_FUNC(rb_is_convex), 0);
       rb_define_method(ContourClass, "rect", RUBY_METHOD_FUNC(rb_get_rect), 0);
+
+      // Aliases
+      rb_define_alias(ContourClass, "closed?", "convex?");
     }
 
     VALUE get_ruby_class() {
