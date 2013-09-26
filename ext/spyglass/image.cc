@@ -315,9 +315,10 @@ namespace Spyglass {
 
     static VALUE rb_get_contours(VALUE self) {
       cv::Mat *img = SG_GET_IMAGE(self);
+      cv::Mat tmp(*img);
 
       std::vector<std::vector<cv::Point> > contours;
-      cv::findContours(*img, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+      cv::findContours(tmp, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
       return Contour::from_contour_vector(contours);
     }
