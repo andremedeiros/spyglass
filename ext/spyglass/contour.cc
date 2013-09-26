@@ -12,6 +12,7 @@ namespace Spyglass {
 
       // Instance methods
       rb_define_method(ContourClass, "corners", RUBY_METHOD_FUNC(rb_get_corners), 0);
+      rb_define_method(ContourClass, "convex?", RUBY_METHOD_FUNC(rb_is_convex), 0);
       rb_define_method(ContourClass, "rect", RUBY_METHOD_FUNC(rb_get_rect), 0);
     }
 
@@ -56,56 +57,12 @@ namespace Spyglass {
     static VALUE rb_get_corners(VALUE self) {
       // This method is a bit of a misnomer in terms of how OpenCV works,
       // seen as it's not a simple getter. It's implemented for ease of
-      // use. This code was blatantly stolen from here:
+      // use. This code was blatantly based on:
       //
       // http://opencv-code.com/tutorials/automatic-perspective-correction-for-quadrilateral-objects/
- 
-      // First, we get the contour and the rect so that we can create an
-      // image from it and draw it.
       std::vector<cv::Point> contour = to_value_vector(SG_GET_CONTOUR(self));
-      std::vector<std::vector<cv::Point> > contours;
-      contours.push_back(contour);
-
-      // Create a blank image where the contour for the existing object would
-      // fit, and give it 20 pixels of extra space.
-      cv::Rect rect = cv::boundingRect(contour);
-      cv::Mat img(rect.y + rect.height + 50, rect.x + rect.width + 50, CV_8UC1);
-      img.setTo(cv::Scalar(0, 0, 0));
-
-      // Draw the contour, blur it, and canny it.
-      cv::drawContours(img, contours, 0, cv::Scalar(255, 255, 255), CV_FILLED);
-      cv::Canny(img, img, 100, 100, 3);
-
-      // Detect lines
-      std::vector<cv::Vec4i> lines;
-      cv::HoughLinesP(img, lines, 1, CV_PI/180, 70, 30, 10);
-
-      // Calculate intersection points amongst lines
-      std::vector<cv::Point> corners;
-      for (int i = 0; i < lines.size(); i++) {
-        for (int j = i+1; j < lines.size(); j++) {
-          cv::Vec4i a = lines[i];
-          cv::Vec4i b = lines[j];
-          cv::Point pt;
-
-          int x1 = a[0], y1 = a[1], x2 = a[2], y2 = a[3];
-          int x3 = b[0], y3 = b[1], x4 = b[2], y4 = b[3];
-          if (float d = ((float)(x1-x2) * (y3-y4)) - ((y1-y2) * (x3-x4))) {
-            pt.x = ((x1*y2 - y1*x2) * (x3-x4) - (x1-x2) * (x3*y4 - y3*x4)) / d;
-            pt.y = ((x1*y2 - y1*x2) * (y3-y4) - (y1-y2) * (x3*y4 - y3*x4)) / d;
-          } else {
-            pt.x = -1;
-            pt.y = -1;
-          }
-
-          if (pt.x >= 0 && pt.y >= 0)
-            corners.push_back(pt);
-        }
-      }
-
-      std::vector<cv::Point> approx;
-      cv::approxPolyDP(cv::Mat(corners), approx, cv::arcLength(cv::Mat(corners), true) * 0.02, true);
-      if (approx.size() != 4) {
+      cv::approxPolyDP(contour, contour, cv::arcLength(cv::Mat(contour), true) * 0.02, true);
+      if (contour.size() != 4) {
         // TODO: Throw exception here?
         std::cout << "The object is not quadrilateral!" << std::endl;
         return Qnil;
@@ -113,17 +70,17 @@ namespace Spyglass {
 
       // Get mass center
       cv::Point center(0,0);
-      for (int i = 0; i < corners.size(); i++)
-        center += corners[i];
-      center *= (1. / corners.size());
+      for (int i = 0; i < contour.size(); i++)
+        center += contour[i];
+      center *= (1. / contour.size());
 
       // Grab TL, TR, BL, and BR corners.
       std::vector<cv::Point> top, bot;
-      for (int i = 0; i < corners.size(); i++) {
-        if (corners[i].y < center.y)
-            top.push_back(corners[i]);
+      for (int i = 0; i < contour.size(); i++) {
+        if (contour[i].y < center.y)
+          top.push_back(contour[i]);
         else
-            bot.push_back(corners[i]);
+          bot.push_back(contour[i]);
       }
 
       cv::Point tl = top[0].x > top[1].x ? top[1] : top[0];
@@ -131,13 +88,21 @@ namespace Spyglass {
       cv::Point bl = bot[0].x > bot[1].x ? bot[1] : bot[0];
       cv::Point br = bot[0].x > bot[1].x ? bot[0] : bot[1];
 
-      corners.clear();
-      corners.push_back(tl);
-      corners.push_back(tr);
-      corners.push_back(br);
-      corners.push_back(bl);
+      contour.clear();
+      contour.push_back(tl);
+      contour.push_back(tr);
+      contour.push_back(br);
+      contour.push_back(bl);
 
-      return from_cvpoint_vector(corners);
+      return from_cvpoint_vector(contour);
+    }
+
+    static VALUE rb_is_convex(VALUE self) {
+      std::vector<cv::Point> contour = to_value_vector(SG_GET_CONTOUR(self));
+      std::vector<cv::Point> simplified;
+      cv::approxPolyDP(contour, simplified, cv::arcLength(cv::Mat(contour), true) * 0.02, true);
+
+      return cv::isContourConvex(simplified) ? Qtrue : Qfalse;
     }
 
     static VALUE rb_get_rect(VALUE self) {
