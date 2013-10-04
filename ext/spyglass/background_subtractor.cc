@@ -1,6 +1,5 @@
 #include "background_subtractor.h"
 
-// static VALUE BackgroundSubtractorClass;
 static VALUE BackgroundSubtractorModule;
 static VALUE BGSMOGClass;
 static VALUE BGSMOG2Class;
