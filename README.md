@@ -21,6 +21,11 @@ There is a lot left to implement, as I've really only ported the parts of the AP
 * Documentation
 * More tests
 
+Acknowledgements
+================
+
+This code contains parts of [BGSLibrary](code.google.com/p/bgslibrary)
+
 Code Status
 ===========
 
