@@ -92,11 +92,13 @@ namespace Spyglass {
         bg->set("varThreshold", threshold);
         bg->set("detectShadows", shadow_detection);
       } else if(CLASS_OF(self) == BGSPratiMediodClass) {
-        SG_OPTION(opts, int, history,   16, NUM2INT);
-        SG_OPTION(opts, int, threshold, 30, NUM2INT);
+        SG_OPTION(opts, int, history,       16, NUM2INT);
+        SG_OPTION(opts, int, threshold,     30, NUM2INT);
+        SG_OPTION(opts, int, sampling_rate, 5,  NUM2INT);
 
         bg->set("historySize", history);
         bg->set("threshold", threshold);
+        bg->set("samplingRate", sampling_rate);
       }
 
       return self;
