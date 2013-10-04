@@ -1,3 +1,3 @@
-module Spyglass 
-  VERSION = "0.0.3"
+module Spyglass
+  VERSION = "0.0.4"
 end
