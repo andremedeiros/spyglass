@@ -9,7 +9,7 @@ WARNING: This demo might not work well with cameras that do auto-exposure.
 
 eos
 
-bg      = BackgroundSubtractor.new
+bg      = BackgroundSubtractor::MOG2.new
 window  = GUI::Window.new("Beach!")
 cap     = VideoCapture.new 0, width: 640, height: 480
 frame   = Image.new

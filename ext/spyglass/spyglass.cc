@@ -19,7 +19,7 @@ extern "C" {
     Spyglass::define_ruby_module();
     Spyglass::ColorSpace::define_ruby_module();
 
-    Spyglass::BackgroundSubtractor::define_ruby_class();
+    Spyglass::BackgroundSubtractor::define_ruby_types();
     Spyglass::CascadeClassifier::define_ruby_class();
     Spyglass::Color::define_ruby_class();
     Spyglass::Contour::define_ruby_class();

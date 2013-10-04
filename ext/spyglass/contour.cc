@@ -66,8 +66,6 @@ namespace Spyglass {
       std::vector<cv::Point> contour = to_value_vector(SG_GET_CONTOUR(self));
       cv::approxPolyDP(contour, contour, cv::arcLength(cv::Mat(contour), true) * 0.02, true);
       if (contour.size() != 4) {
-        // TODO: Throw exception here?
-        std::cout << "The object is not quadrilateral!" << std::endl;
         return Qnil;
       }
 
