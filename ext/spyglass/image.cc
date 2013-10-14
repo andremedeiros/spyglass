@@ -28,6 +28,7 @@ namespace Spyglass {
       rb_define_method(ImageClass, "dilate!", RUBY_METHOD_FUNC(rb_dilate_inplace), -1);
       rb_define_method(ImageClass, "draw_contours", RUBY_METHOD_FUNC(rb_draw_contours), 2);
       rb_define_method(ImageClass, "draw_rectangle", RUBY_METHOD_FUNC(rb_draw_rectangle), 2);
+      rb_define_method(ImageClass, "draw_label", RUBY_METHOD_FUNC(rb_draw_label), 2);
       rb_define_method(ImageClass, "erode", RUBY_METHOD_FUNC(rb_erode), -1);
       rb_define_method(ImageClass, "erode!", RUBY_METHOD_FUNC(rb_erode_inplace), -1);
       rb_define_method(ImageClass, "fill", RUBY_METHOD_FUNC(rb_fill), -1);
@@ -225,6 +226,19 @@ namespace Spyglass {
       cv::Point bottom_right(_rect->x + _rect->width, _rect->y + _rect->height);
 
       cv::rectangle(*img, _rect->tl(), bottom_right, *_color);
+      return self;
+    }
+
+    static VALUE rb_draw_label(VALUE self, VALUE string, VALUE point) {
+      cv::Mat *img  = SG_GET_IMAGE(self);
+      cv::Point *pt = SG_GET_POINT(point);
+      std::string label(StringValueCStr(string));
+
+      const int fontface = cv::FONT_HERSHEY_SIMPLEX;
+      int baseline = 0;
+      cv::Size size = cv::getTextSize(label, fontface, 0.4, 1, &baseline);
+      cv::rectangle(*img, *pt + cv::Point(0, baseline), *pt + cv::Point(size.width, -size.height), CV_RGB(255,255,255), CV_FILLED);
+      cv::putText(*img, label, *pt, fontface, 0.4, CV_RGB(0,0,0), 1, 8);
       return self;
     }
 

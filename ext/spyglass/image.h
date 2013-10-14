@@ -22,6 +22,7 @@ namespace Spyglass {
     static VALUE rb_dilate_inplace(int argc, VALUE *argv, VALUE self);
     static VALUE rb_draw_contours(VALUE self, VALUE contours, VALUE color);
     static VALUE rb_draw_rectangle(VALUE self, VALUE rect, VALUE color);
+    static VALUE rb_draw_label(VALUE self, VALUE string, VALUE point);
     static VALUE rb_erode(int argc, VALUE *argv, VALUE self);
     static VALUE rb_erode_inplace(int argc, VALUE *argv, VALUE self);
     static VALUE rb_fill(int argc, VALUE *argv, VALUE self);
