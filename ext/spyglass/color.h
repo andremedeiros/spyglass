@@ -4,6 +4,9 @@
 #include "spyglass.h"
 
 namespace Spyglass {
+
+  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_COLOR, cv::Scalar);
+
   namespace Color {
     void define_ruby_class();
     VALUE get_ruby_class();

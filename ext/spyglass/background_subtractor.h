@@ -6,6 +6,9 @@
 #include "bgslib_dp_prati_mediod_bgs.h"
 
 namespace Spyglass {
+
+  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_BG_SUBTRACTOR, cv::BackgroundSubtractor);
+
   namespace BackgroundSubtractor {
     void define_ruby_types();
     VALUE get_ruby_module();
