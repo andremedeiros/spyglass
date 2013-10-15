@@ -15,6 +15,7 @@ namespace Spyglass {
         rb_define_method(WindowClass, "hide", RUBY_METHOD_FUNC(rb_hide), 0);
         rb_define_method(WindowClass, "move", RUBY_METHOD_FUNC(rb_move), 2);
         rb_define_method(WindowClass, "on_click", RUBY_METHOD_FUNC(rb_on_click), 0);
+        rb_define_method(WindowClass, "on_double_click", RUBY_METHOD_FUNC(rb_on_double_click), 0);
         rb_define_method(WindowClass, "on_right_click", RUBY_METHOD_FUNC(rb_on_right_click), 0);
         rb_define_method(WindowClass, "on_move", RUBY_METHOD_FUNC(rb_on_move), 0);
         rb_define_method(WindowClass, "show", RUBY_METHOD_FUNC(rb_show), 1);
@@ -45,6 +46,10 @@ namespace Spyglass {
         switch(event) {
           case cv::EVENT_LBUTTONDOWN:
             block = rb_ivar_get(self, rb_intern("@_click_block"));
+            break;
+
+          case cv::EVENT_LBUTTONDBLCLK:
+            block = rb_ivar_get(self, rb_intern("@_double_click_block"));
             break;
 
           case cv::EVENT_RBUTTONDOWN:
@@ -89,6 +94,12 @@ namespace Spyglass {
       static VALUE rb_on_click(VALUE self) {
         rb_need_block();
         rb_ivar_set(self, rb_intern("@_click_block"), rb_block_proc());
+        return self;
+      }
+
+      static VALUE rb_on_double_click(VALUE self) {
+        rb_need_block();
+        rb_ivar_set(self, rb_intern("@_double_click_block"), rb_block_proc());
         return self;
       }
 

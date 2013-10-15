@@ -10,6 +10,10 @@ window.on_click do |x, y|
   puts "CLICKED: #{ x }, #{ y }"
 end
 
+window.on_double_click do |x, y|
+  puts "DOUBLE CLICKED: #{ x }, #{ y }"
+end
+
 window.on_right_click do |x, y|
   puts "RIGHT CLICKED: #{ x }, #{ y }"
 end
@@ -17,6 +21,6 @@ end
 window.show(card)
 
 loop do
-  break if GUI::wait_key(10) > 0
+  break if GUI::wait_key(500) > 0
 end
 

@@ -23,6 +23,7 @@ namespace Spyglass {
       static VALUE rb_hide(VALUE self);
       static VALUE rb_move(VALUE self, VALUE x, VALUE y);
       static VALUE rb_on_click(VALUE self);
+      static VALUE rb_on_double_click(VALUE self);
       static VALUE rb_on_right_click(VALUE self);
       static VALUE rb_on_move(VALUE self);
       static VALUE rb_show(VALUE self, VALUE image);
