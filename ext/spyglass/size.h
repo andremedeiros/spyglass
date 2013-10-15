@@ -4,6 +4,9 @@
 #include "spyglass.h"
 
 namespace Spyglass {
+
+  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_SIZE, cv::Size);
+
   namespace Size {
     void define_ruby_class();
     VALUE get_ruby_class();
