@@ -1,7 +1,6 @@
 require 'mkmf'
-
-$CFLAGS     = ENV["CFLAGS"].to_s  + " " + `pkg-config opencv --cflags`.chomp
-$LOCAL_LIBS = ENV["LIBS"].to_s    + " " + `pkg-config opencv --libs`.chomp
+dir_config("opencv", "/usr/local/include", "/usr/local/lib")
+pkg_config("opencv")
 
 create_makefile("spyglass/spyglass")
 
