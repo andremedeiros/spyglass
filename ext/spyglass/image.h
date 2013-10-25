@@ -38,6 +38,7 @@ namespace Spyglass {
     static VALUE rb_threshold_inplace(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_threshold_inv(int argc, VALUE *argv, VALUE klass);
     static VALUE rb_threshold_inv_inplace(int argc, VALUE *argv, VALUE klass);
+    static VALUE rb_get_color_at(VALUE self, VALUE point);
     static VALUE rb_get_cols(VALUE self);
     static VALUE rb_get_contours(VALUE self);
     static VALUE rb_get_rows(VALUE self);

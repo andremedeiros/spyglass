@@ -17,6 +17,7 @@ namespace Spyglass {
       // Instance methods
       rb_define_method(ImageClass, "canny", RUBY_METHOD_FUNC(rb_canny), 2);
       rb_define_method(ImageClass, "canny!", RUBY_METHOD_FUNC(rb_canny_inplace), 2);
+      rb_define_method(ImageClass, "color_at", RUBY_METHOD_FUNC(rb_get_color_at), 1);
       rb_define_method(ImageClass, "cols", RUBY_METHOD_FUNC(rb_get_cols), 0);
       rb_define_method(ImageClass, "contours", RUBY_METHOD_FUNC(rb_get_contours), 0);
       rb_define_method(ImageClass, "convert", RUBY_METHOD_FUNC(rb_convert), 1);
@@ -320,6 +321,21 @@ namespace Spyglass {
       cv::Mat _img = cv::imread(StringValueCStr(filename));
       cv::Mat *img = new cv::Mat(_img);
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, img);
+    }
+
+    static VALUE rb_get_color_at(VALUE self, VALUE point) {
+      cv::Mat *img      = SG_GET_IMAGE(self);
+      cv::Point *coords = SG_GET_POINT(point);
+
+      uint8_t* data_ptr = (uint8_t*)img->data;
+      int channels      = img->channels();
+      cv::Scalar *color = new cv::Scalar();
+
+      for(int i = 0; i < channels; i++) {
+        (*color)[i] = data_ptr[(coords->y * img->cols * channels) + (coords->x * channels) + i];
+      }
+
+      return Color::from_cvscalar(color);
     }
 
     static VALUE rb_get_cols(VALUE self) {

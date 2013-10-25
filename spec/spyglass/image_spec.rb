@@ -131,4 +131,20 @@ describe Spyglass::Image do
       expect( lena.cols ).to eq(1024)
     end
   end
+
+  describe '#color_at' do
+    let(:colors) { Spyglass::Image.load(fixture_path('rgb.png')) }
+
+    it 'should return the correct values' do
+      red   = colors.color_at(Spyglass::Point.new(155, 55))
+      green = colors.color_at(Spyglass::Point.new(70, 215))
+      blue  = colors.color_at(Spyglass::Point.new(245, 215))
+      white = colors.color_at(Spyglass::Point.new(155, 155))
+
+      expect( red.to_a   ).to eq( [0, 0, 255, 0] )
+      expect( green.to_a ).to eq( [0, 255, 0, 0] )
+      expect( blue.to_a  ).to eq( [255, 0, 0, 0] )
+      expect( white.to_a ).to eq( [255, 255, 255, 0] )
+    end
+  end
 end
