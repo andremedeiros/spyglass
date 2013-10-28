@@ -51,4 +51,14 @@ describe Spyglass::Color do
       end
     end
   end
+
+  describe 'setters' do
+    describe '#[]=' do
+      it 'should set a specific color component' do
+        color[0] = 100
+
+        expect( color[0] ).to eq(100)
+      end
+    end
+  end
 end

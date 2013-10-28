@@ -12,6 +12,7 @@ namespace Spyglass {
 
       // Instance methods
       rb_define_method(ColorClass, "[]", RUBY_METHOD_FUNC(rb_get_color), 1);
+      rb_define_method(ColorClass, "[]=", RUBY_METHOD_FUNC(rb_set_color), 2);
       rb_define_method(ColorClass, "to_a", RUBY_METHOD_FUNC(rb_to_a), 0);
       rb_define_method(ColorClass, "zeros?", RUBY_METHOD_FUNC(rb_is_zeros), 0);
     }
@@ -53,6 +54,15 @@ namespace Spyglass {
       cv::Scalar *color = SG_GET_COLOR(self);
       double val = (*color)[idx];
       return DBL2NUM(val);
+    }
+
+    static VALUE rb_set_color(VALUE self, VALUE index, VALUE value) {
+      cv::Scalar *color = SG_GET_COLOR(self);
+      int idx = NUM2INT(index);
+
+      color[idx] = NUM2DBL(value);
+
+      return self;
     }
 
     static VALUE rb_to_a(VALUE self) {

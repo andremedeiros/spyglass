@@ -15,6 +15,7 @@ namespace Spyglass {
     static void rb_free(cv::Scalar *color);
     static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);
     static VALUE rb_get_color(VALUE self, VALUE index);
+    static VALUE rb_set_color(VALUE self, VALUE index, VALUE color);
     static VALUE rb_is_zeros(VALUE self);
     static VALUE rb_to_a(VALUE self);
 
