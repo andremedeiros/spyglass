@@ -13,6 +13,7 @@ namespace Spyglass {
       // Instance methods
       rb_define_method(RectClass, "area", RUBY_METHOD_FUNC(rb_get_area), 0);
       rb_define_method(RectClass, "center", RUBY_METHOD_FUNC(rb_get_center), 0);
+      rb_define_method(RectClass, "contains?", RUBY_METHOD_FUNC(rb_contains), 1);
       rb_define_method(RectClass, "height", RUBY_METHOD_FUNC(rb_get_height), 0);
       rb_define_method(RectClass, "height=", RUBY_METHOD_FUNC(rb_set_height), 1);
       rb_define_method(RectClass, "point", RUBY_METHOD_FUNC(rb_get_point), 0);
@@ -53,6 +54,20 @@ namespace Spyglass {
       rect->height = FIX2INT(height);
 
       return self;
+    }
+
+    static VALUE rb_contains(VALUE self, VALUE other) {
+      cv::Rect *rect = SG_GET_RECT(self);
+      if(CLASS_OF(other) == Point::get_ruby_class()) {
+        cv::Point *point = SG_GET_POINT(other);
+        bool within_x = (rect->x > point->x || rect->x + rect->width < point->x);
+        bool within_y = (rect->y > point->y || rect->y + rect->height < point->y);
+
+        return (!within_x && !within_y) ? Qtrue : Qfalse;
+      } else {
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Point)",
+            rb_obj_classname(other));
+      }
     }
 
     static VALUE rb_get_area(VALUE self) {

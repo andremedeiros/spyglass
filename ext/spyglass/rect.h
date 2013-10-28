@@ -14,6 +14,7 @@ namespace Spyglass {
     static VALUE rb_alloc(VALUE self);
     static void rb_free(cv::Rect *rect);
     static VALUE rb_initialize(VALUE self, VALUE x, VALUE y, VALUE width, VALUE height);
+    static VALUE rb_contains(VALUE self, VALUE other);
     static VALUE rb_get_area(VALUE self);
     static VALUE rb_get_center(VALUE self);
     static VALUE rb_get_height(VALUE self);

@@ -83,6 +83,23 @@ describe Spyglass::Rect do
         expect( rect.to_a ).to eq([10, 20, 100, 200])
       end
     end
+
+    describe '#contains?' do
+      it 'should return true if the point exists within the rect' do
+        pt = Spyglass::Point.new(50, 50)
+        expect( rect.contains?(pt) ).to be_true
+      end
+
+      it 'should return false if the point only crosses the X axis' do
+        pt = Spyglass::Point.new(20, 0)
+        expect( rect.contains?(pt) ).to be_false
+      end
+
+      it 'should return false if the point only crosses the Y axis' do
+        pt = Spyglass::Point.new(0, 50)
+        expect( rect.contains?(pt) ).to be_false
+      end
+    end
   end
 
   describe 'setters' do
