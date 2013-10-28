@@ -62,6 +62,27 @@ describe Spyglass::Rect do
         expect( rect.point.y ).to eq( rect.y )
       end
     end
+
+    describe '#center' do
+      it 'should be an instance of Spyglass::Point' do
+        expect( rect.center ).to be_a Spyglass::Point
+      end
+
+      it 'should return the correct values' do
+        expect( rect.center.x ).to eq(60)
+        expect( rect.center.y ).to eq(120)
+      end
+    end
+
+    describe '#to_a' do
+      it 'should be an instance of Array' do
+        expect( rect.to_a ).to be_a Array
+      end
+
+      it 'should return the correct values' do
+        expect( rect.to_a ).to eq([10, 20, 100, 200])
+      end
+    end
   end
 
   describe 'setters' do

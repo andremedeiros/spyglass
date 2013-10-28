@@ -12,10 +12,12 @@ namespace Spyglass {
 
       // Instance methods
       rb_define_method(RectClass, "area", RUBY_METHOD_FUNC(rb_get_area), 0);
+      rb_define_method(RectClass, "center", RUBY_METHOD_FUNC(rb_get_center), 0);
       rb_define_method(RectClass, "height", RUBY_METHOD_FUNC(rb_get_height), 0);
       rb_define_method(RectClass, "height=", RUBY_METHOD_FUNC(rb_set_height), 1);
       rb_define_method(RectClass, "point", RUBY_METHOD_FUNC(rb_get_point), 0);
       rb_define_method(RectClass, "size", RUBY_METHOD_FUNC(rb_get_size), 0);
+      rb_define_method(RectClass, "to_a", RUBY_METHOD_FUNC(rb_to_a), 0);
       rb_define_method(RectClass, "width", RUBY_METHOD_FUNC(rb_get_width), 0);
       rb_define_method(RectClass, "width=", RUBY_METHOD_FUNC(rb_set_width), 1);
       rb_define_method(RectClass, "x", RUBY_METHOD_FUNC(rb_get_x), 0);
@@ -56,6 +58,16 @@ namespace Spyglass {
     static VALUE rb_get_area(VALUE self) {
       cv::Rect *rect = SG_GET_RECT(self);
       return INT2FIX(rect->area());
+    }
+
+    static VALUE rb_get_center(VALUE self) {
+      cv::Rect *rect = SG_GET_RECT(self);
+      cv::Point *point = new cv::Point();
+
+      point->x = rect->x + (rect->width / 2);
+      point->y = rect->y + (rect->height / 2);
+
+      return Point::from_cvpoint(point);
     }
 
     static VALUE rb_get_height(VALUE self) {
@@ -122,6 +134,18 @@ namespace Spyglass {
 
       rect->y = FIX2INT(y);
       return y;
+    }
+
+    static VALUE rb_to_a(VALUE self) {
+      cv::Rect *rect = SG_GET_RECT(self);
+
+      VALUE ary = rb_ary_new2(4);
+      rb_ary_store(ary, 0, INT2NUM(rect->x));
+      rb_ary_store(ary, 1, INT2NUM(rect->y));
+      rb_ary_store(ary, 2, INT2NUM(rect->width));
+      rb_ary_store(ary, 3, INT2NUM(rect->height));
+
+      return ary;
     }
 
     VALUE from_cvrect(cv::Rect *rect) {

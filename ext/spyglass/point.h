@@ -19,6 +19,7 @@ namespace Spyglass {
     static VALUE rb_set_x(VALUE self, VALUE x);
     static VALUE rb_set_y(VALUE self, VALUE y);
 
+    VALUE from_cvpoint(cv::Point *point);
     VALUE from_cvrect(cv::Rect *rect);
   }
 }
