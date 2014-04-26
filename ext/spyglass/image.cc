@@ -1,12 +1,18 @@
 #include "image.h"
 
-static VALUE ImageClass;
+extern VALUE SpyglassModule;
+extern VALUE SizeClass;
+extern VALUE ContourClass;
+extern VALUE ColorClass;
+extern VALUE RectClass;
+
+VALUE ImageClass = Qnil;
 
 namespace Spyglass {
   namespace Image {
     void define_ruby_class() {
       // Class definition
-      ImageClass = rb_define_class_under(Spyglass::get_ruby_module(), "Image", rb_cObject);
+      ImageClass = rb_define_class_under(SpyglassModule, "Image", rb_cObject);
       rb_define_alloc_func(ImageClass, rb_alloc);
       rb_define_method(ImageClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), -1);
 
@@ -51,10 +57,6 @@ namespace Spyglass {
       rb_define_const(ImageClass, "TYPE_8UC3", INT2NUM(CV_8UC3));
     }
 
-    VALUE get_ruby_class() {
-      return ImageClass;
-    }
-
     static VALUE rb_alloc(VALUE self) {
       cv::Mat *mat = new cv::Mat();
       return Data_Wrap_Struct(ImageClass, NULL, rb_free, mat);
@@ -72,7 +74,7 @@ namespace Spyglass {
       VALUE size, type;
       rb_scan_args(argc, argv, "02", &size, &type);
 
-      if(RTEST(size) && CLASS_OF(size) != Size::get_ruby_class()) {
+      if(RTEST(size) && CLASS_OF(size) != SizeClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Size)",
             rb_obj_classname(size));
       }
@@ -128,7 +130,7 @@ namespace Spyglass {
       }
 
       if(RTEST(mask) && CLASS_OF(mask) != ImageClass) {
-        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
+        rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(mask));
       }
 
@@ -185,11 +187,11 @@ namespace Spyglass {
     }
 
     static VALUE rb_draw_contours(VALUE self, VALUE contours, VALUE color) {
-      if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) != Contour::get_ruby_class())
+      if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) != ContourClass)
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Array or Spyglass::Contour)",
             rb_obj_classname(contours));
 
-      if(CLASS_OF(color) != Color::get_ruby_class()) {
+      if(CLASS_OF(color) != ColorClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Color)",
             rb_obj_classname(color));
       }
@@ -215,7 +217,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_draw_rectangle(VALUE self, VALUE rect, VALUE color) {
-      if(CLASS_OF(rect) != Rect::get_ruby_class()) {
+      if(CLASS_OF(rect) != RectClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
             rb_obj_classname(rect));
       }
@@ -280,7 +282,7 @@ namespace Spyglass {
       VALUE color, mask;
       rb_scan_args(argc, argv, "11", &color, &mask);
 
-      if(CLASS_OF(color) != Color::get_ruby_class())
+      if(CLASS_OF(color) != ColorClass)
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Color)",
             rb_obj_classname(color));
 
@@ -378,7 +380,7 @@ namespace Spyglass {
     }
 
     cv::Mat *_do_crop(VALUE self, VALUE rect) {
-      if(CLASS_OF(rect) != Rect::get_ruby_class()) {
+      if(CLASS_OF(rect) != RectClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
             rb_obj_classname(rect));
       }
@@ -413,7 +415,7 @@ namespace Spyglass {
       VALUE mask;
       rb_scan_args(argc, argv, "01", &mask);
 
-      if(RTEST(mask) && CLASS_OF(mask) != Image::get_ruby_class()) {
+      if(RTEST(mask) && CLASS_OF(mask) != ImageClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(mask));
       }
@@ -549,7 +551,7 @@ namespace Spyglass {
       VALUE size, type;
       rb_scan_args(argc, argv, "11", &size, &type);
 
-      if(CLASS_OF(size) != Size::get_ruby_class()) {
+      if(CLASS_OF(size) != SizeClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Size)",
             rb_obj_classname(size));
       }

@@ -1,12 +1,14 @@
 #include "color.h"
 
-static VALUE ColorClass;
+extern VALUE SpyglassModule;
+
+VALUE ColorClass = Qnil;
 
 namespace Spyglass {
   namespace Color {
     void define_ruby_class() {
       // Class definition
-      ColorClass = rb_define_class_under(Spyglass::get_ruby_module(), "Color", rb_cObject);
+      ColorClass = rb_define_class_under(SpyglassModule, "Color", rb_cObject);
       rb_define_alloc_func(ColorClass, rb_alloc);
       rb_define_method(ColorClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), -1);
 
@@ -15,10 +17,6 @@ namespace Spyglass {
       rb_define_method(ColorClass, "[]=", RUBY_METHOD_FUNC(rb_set_color), 2);
       rb_define_method(ColorClass, "to_a", RUBY_METHOD_FUNC(rb_to_a), 0);
       rb_define_method(ColorClass, "zeros?", RUBY_METHOD_FUNC(rb_is_zeros), 0);
-    }
-
-    VALUE get_ruby_class() {
-      return ColorClass;
     }
 
     static VALUE rb_alloc(VALUE self) {

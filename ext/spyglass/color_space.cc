@@ -1,11 +1,12 @@
 #include "color_space.h"
 
-VALUE ColorSpaceModule;
+extern VALUE SpyglassModule;
+VALUE ColorSpaceModule = Qnil;
 
 namespace Spyglass {
   namespace ColorSpace {
     void define_ruby_module() {
-      ColorSpaceModule = rb_define_module_under(Spyglass::get_ruby_module(), "ColorSpace");
+      ColorSpaceModule = rb_define_module_under(SpyglassModule, "ColorSpace");
 
       // BGR
       rb_define_const(ColorSpaceModule, "BGR_TO_GRAY",  INT2FIX(CV_BGR2GRAY));

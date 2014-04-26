@@ -1,12 +1,14 @@
 #include "point.h"
 
-static VALUE PointClass;
+extern VALUE SpyglassModule;
+
+VALUE PointClass = Qnil;
 
 namespace Spyglass {
   namespace Point {
     void define_ruby_class() {
       // Class definition
-      PointClass = rb_define_class_under(Spyglass::get_ruby_module(), "Point", rb_cObject);
+      PointClass = rb_define_class_under(SpyglassModule, "Point", rb_cObject);
       rb_define_alloc_func(PointClass, rb_alloc);
       rb_define_method(PointClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), 2);
 
@@ -15,10 +17,6 @@ namespace Spyglass {
       rb_define_method(PointClass, "x=", RUBY_METHOD_FUNC(rb_set_x), 1);
       rb_define_method(PointClass, "y", RUBY_METHOD_FUNC(rb_get_y), 0);
       rb_define_method(PointClass, "y=", RUBY_METHOD_FUNC(rb_set_y), 1);
-    }
-
-    VALUE get_ruby_class() {
-      return PointClass;
     }
 
     static VALUE rb_alloc(VALUE self) {

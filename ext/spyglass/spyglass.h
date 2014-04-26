@@ -20,10 +20,6 @@
 #include "gui.h"
 #include "window.h"
 
-namespace Spyglass {
-  VALUE get_ruby_module();
-}
-
 extern "C" void Init_spyglass();
 
 #endif // SPYGLASS_SPYGLASS_H_

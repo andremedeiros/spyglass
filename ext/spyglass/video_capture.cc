@@ -1,11 +1,14 @@
 #include "video_capture.h"
 
-static VALUE VideoCaptureClass;
+extern VALUE SpyglassModule;
+extern VALUE ImageClass;
+
+VALUE VideoCaptureClass = Qnil;
 
 namespace Spyglass {
   namespace VideoCapture {
     void define_ruby_class() {
-      VideoCaptureClass = rb_define_class_under(Spyglass::get_ruby_module(), "VideoCapture", rb_cObject);
+      VideoCaptureClass = rb_define_class_under(SpyglassModule, "VideoCapture", rb_cObject);
       rb_define_alloc_func(VideoCaptureClass, rb_alloc);
       rb_define_method(VideoCaptureClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), -1);
 
@@ -13,10 +16,6 @@ namespace Spyglass {
       rb_define_method(VideoCaptureClass, ">>", RUBY_METHOD_FUNC(rb_capture), 1);
       rb_define_method(VideoCaptureClass, "open?", RUBY_METHOD_FUNC(rb_is_open), 0);
       rb_define_method(VideoCaptureClass, "stop", RUBY_METHOD_FUNC(rb_stop), 0);
-    }
-
-    VALUE get_ruby_class() {
-      return VideoCaptureClass;
     }
 
     static VALUE rb_alloc(VALUE self) {
@@ -69,7 +68,7 @@ namespace Spyglass {
     }
 
     static VALUE rb_capture(VALUE self, VALUE dest) {
-      if(CLASS_OF(dest) != Image::get_ruby_class()) {
+      if(CLASS_OF(dest) != ImageClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(dest));
       }

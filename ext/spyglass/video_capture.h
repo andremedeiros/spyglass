@@ -9,7 +9,6 @@ namespace Spyglass {
 
   namespace VideoCapture {
     void define_ruby_class();
-    VALUE get_ruby_class();
 
     static VALUE rb_alloc(VALUE self);
     static void rb_free(cv::VideoCapture *cap);

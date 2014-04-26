@@ -11,7 +11,6 @@ namespace Spyglass {
 
   namespace BackgroundSubtractor {
     void define_ruby_types();
-    VALUE get_ruby_module();
 
     static void rb_free(cv::BackgroundSubtractor *bg);
     static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);

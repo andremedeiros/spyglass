@@ -1,13 +1,16 @@
 #include "window.h"
 
-static VALUE WindowClass;
+extern VALUE GuiModule;
+extern VALUE ImageClass;
+
+VALUE WindowClass = Qnil;
 
 namespace Spyglass {
   namespace GUI {
     namespace Window {
       void define_ruby_class() {
         // Class definition
-        WindowClass = rb_define_class_under(Spyglass::GUI::get_ruby_module(), "Window", rb_cObject);
+        WindowClass = rb_define_class_under(GuiModule, "Window", rb_cObject);
         rb_define_alloc_func(WindowClass, rb_alloc);
         rb_define_method(WindowClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), 1);
 
@@ -20,10 +23,6 @@ namespace Spyglass {
         rb_define_method(WindowClass, "on_move", RUBY_METHOD_FUNC(rb_on_move), 0);
         rb_define_method(WindowClass, "show", RUBY_METHOD_FUNC(rb_show), 1);
         rb_define_method(WindowClass, "title", RUBY_METHOD_FUNC(rb_get_title), 0);
-      }
-
-      VALUE get_ruby_class() {
-        return WindowClass;
       }
 
       static VALUE rb_alloc(VALUE self) {
@@ -127,7 +126,7 @@ namespace Spyglass {
       }
 
       static VALUE rb_show(VALUE self, VALUE image) {
-        if(!(CLASS_OF(image) == Image::get_ruby_class())) {
+        if(CLASS_OF(image) != ImageClass) {
           rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
               rb_obj_classname(image));
         }

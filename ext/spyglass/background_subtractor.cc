@@ -1,16 +1,19 @@
 #include "background_subtractor.h"
 
-static VALUE BackgroundSubtractorModule;
-static VALUE BGSMOGClass;
-static VALUE BGSMOG2Class;
-static VALUE BGSGMGClass;
-static VALUE BGSPratiMediodClass;
+extern VALUE SpyglassModule;
+extern VALUE ImageClass;
+
+VALUE BackgroundSubtractorModule = Qnil;
+VALUE BGSMOGClass = Qnil;
+VALUE BGSMOG2Class = Qnil;
+VALUE BGSGMGClass = Qnil;
+VALUE BGSPratiMediodClass = Qnil;
 
 namespace Spyglass {
   namespace BackgroundSubtractor {
     void define_ruby_types() {
       // Module definition
-      BackgroundSubtractorModule = rb_define_module_under(Spyglass::get_ruby_module(), "BackgroundSubtractor");
+      BackgroundSubtractorModule = rb_define_module_under(SpyglassModule, "BackgroundSubtractor");
 
       // Class definition: MOG
       BGSMOGClass = rb_define_class_under(BackgroundSubtractorModule, "MOG", rb_cObject);
@@ -35,10 +38,6 @@ namespace Spyglass {
       rb_define_alloc_func(BGSPratiMediodClass, rb_prati_mediod_alloc);
       rb_define_method(BGSPratiMediodClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), -1);
       rb_define_method(BGSPratiMediodClass, "subtract", RUBY_METHOD_FUNC(rb_subtract), -1);
-    }
-
-    VALUE get_ruby_module() {
-      return BackgroundSubtractorModule;
     }
 
     static VALUE rb_mog_alloc(VALUE self) {
@@ -109,7 +108,7 @@ namespace Spyglass {
 
       rb_scan_args(argc, argv, "11", &image, &learn_rate);
 
-      if(CLASS_OF(image) != Image::get_ruby_class()) {
+      if(CLASS_OF(image) != ImageClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(image));
       }

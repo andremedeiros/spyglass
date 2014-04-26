@@ -6,7 +6,6 @@
 namespace Spyglass {
   namespace ColorSpace {
     void define_ruby_module();
-    VALUE get_ruby_module();
   }
 }
 

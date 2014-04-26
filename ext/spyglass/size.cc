@@ -1,12 +1,14 @@
 #include "size.h"
 
-static VALUE SizeClass;
+extern VALUE SpyglassModule;
+
+VALUE SizeClass = Qnil;
 
 namespace Spyglass {
   namespace Size {
     void define_ruby_class() {
       // Class definition
-      SizeClass = rb_define_class_under(Spyglass::get_ruby_module(), "Size", rb_cObject);
+      SizeClass = rb_define_class_under(SpyglassModule, "Size", rb_cObject);
       rb_define_alloc_func(SizeClass, rb_alloc);
       rb_define_method(SizeClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), 2);
 
@@ -16,10 +18,6 @@ namespace Spyglass {
       rb_define_method(SizeClass, "height=", RUBY_METHOD_FUNC(rb_set_height), 1);
       rb_define_method(SizeClass, "width", RUBY_METHOD_FUNC(rb_get_width), 0);
       rb_define_method(SizeClass, "width=", RUBY_METHOD_FUNC(rb_set_width), 1);
-    }
-
-    VALUE get_ruby_class() {
-      return SizeClass;
     }
 
     static VALUE rb_alloc(VALUE self) {

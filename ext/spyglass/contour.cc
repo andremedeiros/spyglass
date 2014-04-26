@@ -1,12 +1,15 @@
 #include "contour.h"
 
-static VALUE ContourClass;
+extern VALUE SpyglassModule;
+extern VALUE PointClass;
+
+VALUE ContourClass = Qnil;
 
 namespace Spyglass {
   namespace Contour {
     void define_ruby_class() {
       // Class definition
-      ContourClass = rb_define_class_under(Spyglass::get_ruby_module(), "Contour", rb_cObject);
+      ContourClass = rb_define_class_under(SpyglassModule, "Contour", rb_cObject);
       rb_define_alloc_func(ContourClass, rb_alloc);
       rb_define_method(ContourClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), -1);
 
@@ -17,10 +20,6 @@ namespace Spyglass {
 
       // Aliases
       rb_define_alias(ContourClass, "closed?", "convex?");
-    }
-
-    VALUE get_ruby_class() {
-      return ContourClass;
     }
 
     static VALUE rb_alloc(VALUE self) {
@@ -45,7 +44,7 @@ namespace Spyglass {
       std::vector<cv::Point *> *contour = SG_GET_CONTOUR(self);
       for(int idx = 0; idx < RARRAY_LEN(points); idx++) {
         VALUE point = rb_ary_entry(points, idx);
-        if(CLASS_OF(point) != Point::get_ruby_class()) {
+        if(CLASS_OF(point) != PointClass) {
           rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Point)",
               rb_obj_classname(point));
         }

@@ -1,12 +1,8 @@
 #include "spyglass.h"
 
-static VALUE SpyglassModule;
+VALUE SpyglassModule = Qnil;
 
 namespace Spyglass {
-
-  VALUE get_ruby_module() {
-    return SpyglassModule;
-  }
 
   void define_ruby_module() {
     SpyglassModule = rb_define_module("Spyglass");

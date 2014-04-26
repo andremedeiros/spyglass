@@ -1,18 +1,16 @@
 #include "gui.h"
 
-static VALUE GuiModule;
+extern VALUE SpyglassModule;
+
+VALUE GuiModule = Qnil;
 
 namespace Spyglass {
   namespace GUI {
     void define_ruby_module() {
-      GuiModule = rb_define_module_under(Spyglass::get_ruby_module(), "GUI");
+      GuiModule = rb_define_module_under(SpyglassModule, "GUI");
 
       // Module methods
       rb_define_singleton_method(GuiModule, "wait_key", RUBY_METHOD_FUNC(rb_wait_key), 1);
-    }
-
-    VALUE get_ruby_module() {
-      return GuiModule;
     }
 
     static VALUE rb_wait_key(VALUE klass, VALUE timeout) {

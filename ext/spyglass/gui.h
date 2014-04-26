@@ -6,7 +6,6 @@
 namespace Spyglass {
   namespace GUI {
     void define_ruby_module();
-    VALUE get_ruby_module();
 
     static VALUE rb_wait_key(VALUE klass, VALUE timeout);
   }

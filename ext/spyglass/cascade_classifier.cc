@@ -1,21 +1,20 @@
 #include "cascade_classifier.h"
 
-static VALUE CascadeClassifierClass;
+extern VALUE SpyglassModule;
+extern VALUE ImageClass;
+
+VALUE CascadeClassifierClass = Qnil;
 
 namespace Spyglass {
   namespace CascadeClassifier {
     void define_ruby_class() {
       // Class definition
-      CascadeClassifierClass = rb_define_class_under(Spyglass::get_ruby_module(), "CascadeClassifier", rb_cObject);
+      CascadeClassifierClass = rb_define_class_under(SpyglassModule, "CascadeClassifier", rb_cObject);
       rb_define_alloc_func(CascadeClassifierClass, rb_alloc);
       rb_define_method(CascadeClassifierClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), 1);
 
       // Instance methods
       rb_define_method(CascadeClassifierClass, "detect", RUBY_METHOD_FUNC(rb_detect), -1);
-    }
-
-    VALUE get_ruby_class() {
-      return CascadeClassifierClass;
     }
 
     static VALUE rb_alloc(VALUE self) {
@@ -42,7 +41,7 @@ namespace Spyglass {
       VALUE image, opts;
       rb_scan_args(argc, argv, "11", &image, &opts);
 
-      if(CLASS_OF(image) != Image::get_ruby_class()) {
+      if(CLASS_OF(image) != ImageClass) {
         rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
             rb_obj_classname(image));
       }

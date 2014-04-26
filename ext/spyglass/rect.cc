@@ -1,12 +1,15 @@
 #include "rect.h"
 
-static VALUE RectClass;
+extern VALUE SpyglassModule;
+extern VALUE PointClass;
+
+VALUE RectClass = Qnil;
 
 namespace Spyglass {
   namespace Rect {
     void define_ruby_class() {
       // Class definition
-      RectClass = rb_define_class_under(Spyglass::get_ruby_module(), "Rect", rb_cObject);
+      RectClass = rb_define_class_under(SpyglassModule, "Rect", rb_cObject);
       rb_define_alloc_func(RectClass, rb_alloc);
       rb_define_method(RectClass, "initialize", RUBY_METHOD_FUNC(rb_initialize), 4);
 
@@ -25,10 +28,6 @@ namespace Spyglass {
       rb_define_method(RectClass, "x=", RUBY_METHOD_FUNC(rb_set_x), 1);
       rb_define_method(RectClass, "y", RUBY_METHOD_FUNC(rb_get_y), 0);
       rb_define_method(RectClass, "y=", RUBY_METHOD_FUNC(rb_set_y), 1);
-    }
-
-    VALUE get_ruby_class() {
-      return RectClass;
     }
 
     static VALUE rb_alloc(VALUE self) {
@@ -58,7 +57,7 @@ namespace Spyglass {
 
     static VALUE rb_contains(VALUE self, VALUE other) {
       cv::Rect *rect = SG_GET_RECT(self);
-      if(CLASS_OF(other) == Point::get_ruby_class()) {
+      if(CLASS_OF(other) == PointClass) {
         cv::Point *point = SG_GET_POINT(other);
         bool within_x = (rect->x > point->x || rect->x + rect->width < point->x);
         bool within_y = (rect->y > point->y || rect->y + rect->height < point->y);
