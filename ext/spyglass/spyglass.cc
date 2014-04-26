@@ -1,10 +1,10 @@
 #include "spyglass.h"
 
-VALUE SpyglassModule = Qnil;
+VALUE rb_mSpyglass = Qnil;
 
 void
 Init_spyglass() {
-  SpyglassModule = rb_define_module("Spyglass");
+  rb_mSpyglass = rb_define_module("Spyglass");
 
   rb_cs_init();       // Module: ColorSpace
   rb_bgs_init();      // Class cluster: Background Subtractors

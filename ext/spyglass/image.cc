@@ -1,65 +1,65 @@
 #include "image.h"
 
-extern VALUE SpyglassModule;
-extern VALUE SizeClass;
-extern VALUE ContourClass;
-extern VALUE ColorClass;
-extern VALUE RectClass;
+extern VALUE rb_mSpyglass;
+extern VALUE rb_cSize;
+extern VALUE rb_cContour;
+extern VALUE rb_cColor;
+extern VALUE rb_cRect;
 
-VALUE ImageClass = Qnil;
+VALUE rb_cImage = Qnil;
 
 void
 rb_img_init() {
   // Class definition
-  ImageClass = rb_define_class_under(SpyglassModule, "Image", rb_cObject);
-  rb_define_alloc_func(ImageClass, rb_img_alloc);
-  rb_define_method(ImageClass, "initialize", RUBY_METHOD_FUNC(rb_img_initialize), -1);
+  rb_cImage = rb_define_class_under(rb_mSpyglass, "Image", rb_cObject);
+  rb_define_alloc_func(rb_cImage, rb_img_alloc);
+  rb_define_method(rb_cImage, "initialize", RUBY_METHOD_FUNC(rb_img_initialize), -1);
 
   // Class methods
-  rb_define_singleton_method(ImageClass, "load", RUBY_METHOD_FUNC(rb_img_load), -1);
-  rb_define_singleton_method(ImageClass, "zeros", RUBY_METHOD_FUNC(rb_img_zeros), -1);
+  rb_define_singleton_method(rb_cImage, "load", RUBY_METHOD_FUNC(rb_img_load), -1);
+  rb_define_singleton_method(rb_cImage, "zeros", RUBY_METHOD_FUNC(rb_img_zeros), -1);
 
   // Instance methods
-  rb_define_method(ImageClass, "canny", RUBY_METHOD_FUNC(rb_img_canny), 2);
-  rb_define_method(ImageClass, "canny!", RUBY_METHOD_FUNC(rb_img_canny_inplace), 2);
-  rb_define_method(ImageClass, "color_at", RUBY_METHOD_FUNC(rb_img_get_color_at), 1);
-  rb_define_method(ImageClass, "cols", RUBY_METHOD_FUNC(rb_img_get_cols), 0);
-  rb_define_method(ImageClass, "contours", RUBY_METHOD_FUNC(rb_img_get_contours), 0);
-  rb_define_method(ImageClass, "convert", RUBY_METHOD_FUNC(rb_img_convert), 1);
-  rb_define_method(ImageClass, "convert!", RUBY_METHOD_FUNC(rb_img_convert_inplace), 1);
-  rb_define_method(ImageClass, "copy!", RUBY_METHOD_FUNC(rb_img_copy_inplace), -1);
-  rb_define_method(ImageClass, "crop", RUBY_METHOD_FUNC(rb_img_crop), 1);
-  rb_define_method(ImageClass, "crop!", RUBY_METHOD_FUNC(rb_img_crop_inplace), 1);
-  rb_define_method(ImageClass, "dilate", RUBY_METHOD_FUNC(rb_img_dilate), -1);
-  rb_define_method(ImageClass, "dilate!", RUBY_METHOD_FUNC(rb_img_dilate_inplace), -1);
-  rb_define_method(ImageClass, "draw_contours", RUBY_METHOD_FUNC(rb_img_draw_contours), 2);
-  rb_define_method(ImageClass, "draw_rectangle", RUBY_METHOD_FUNC(rb_img_draw_rectangle), 2);
-  rb_define_method(ImageClass, "draw_label", RUBY_METHOD_FUNC(rb_img_draw_label), 2);
-  rb_define_method(ImageClass, "erode", RUBY_METHOD_FUNC(rb_img_erode), -1);
-  rb_define_method(ImageClass, "erode!", RUBY_METHOD_FUNC(rb_img_erode_inplace), -1);
-  rb_define_method(ImageClass, "fill", RUBY_METHOD_FUNC(rb_img_fill), -1);
-  rb_define_method(ImageClass, "fill!", RUBY_METHOD_FUNC(rb_img_fill_inplace), -1);
-  rb_define_method(ImageClass, "mean", RUBY_METHOD_FUNC(rb_img_mean), -1);
-  rb_define_method(ImageClass, "resize", RUBY_METHOD_FUNC(rb_img_resize), 1);
-  rb_define_method(ImageClass, "resize!", RUBY_METHOD_FUNC(rb_img_resize_inplace), 1);
-  rb_define_method(ImageClass, "rows", RUBY_METHOD_FUNC(rb_img_get_rows), 0);
-  rb_define_method(ImageClass, "size", RUBY_METHOD_FUNC(rb_img_get_size), 0);
-  rb_define_method(ImageClass, "threshold", RUBY_METHOD_FUNC(rb_img_threshold), -1);
-  rb_define_method(ImageClass, "threshold!", RUBY_METHOD_FUNC(rb_img_threshold_inplace), -1);
-  rb_define_method(ImageClass, "threshold_inv", RUBY_METHOD_FUNC(rb_img_threshold_inv), -1);
-  rb_define_method(ImageClass, "threshold_inv!", RUBY_METHOD_FUNC(rb_img_threshold_inv_inplace), -1);
-  rb_define_method(ImageClass, "warp_perspective", RUBY_METHOD_FUNC(rb_img_warp_perspective), 2);
-  rb_define_method(ImageClass, "write", RUBY_METHOD_FUNC(rb_img_write), 1);
+  rb_define_method(rb_cImage, "canny", RUBY_METHOD_FUNC(rb_img_canny), 2);
+  rb_define_method(rb_cImage, "canny!", RUBY_METHOD_FUNC(rb_img_canny_inplace), 2);
+  rb_define_method(rb_cImage, "color_at", RUBY_METHOD_FUNC(rb_img_get_color_at), 1);
+  rb_define_method(rb_cImage, "cols", RUBY_METHOD_FUNC(rb_img_get_cols), 0);
+  rb_define_method(rb_cImage, "contours", RUBY_METHOD_FUNC(rb_img_get_contours), 0);
+  rb_define_method(rb_cImage, "convert", RUBY_METHOD_FUNC(rb_img_convert), 1);
+  rb_define_method(rb_cImage, "convert!", RUBY_METHOD_FUNC(rb_img_convert_inplace), 1);
+  rb_define_method(rb_cImage, "copy!", RUBY_METHOD_FUNC(rb_img_copy_inplace), -1);
+  rb_define_method(rb_cImage, "crop", RUBY_METHOD_FUNC(rb_img_crop), 1);
+  rb_define_method(rb_cImage, "crop!", RUBY_METHOD_FUNC(rb_img_crop_inplace), 1);
+  rb_define_method(rb_cImage, "dilate", RUBY_METHOD_FUNC(rb_img_dilate), -1);
+  rb_define_method(rb_cImage, "dilate!", RUBY_METHOD_FUNC(rb_img_dilate_inplace), -1);
+  rb_define_method(rb_cImage, "draw_contours", RUBY_METHOD_FUNC(rb_img_draw_contours), 2);
+  rb_define_method(rb_cImage, "draw_rectangle", RUBY_METHOD_FUNC(rb_img_draw_rectangle), 2);
+  rb_define_method(rb_cImage, "draw_label", RUBY_METHOD_FUNC(rb_img_draw_label), 2);
+  rb_define_method(rb_cImage, "erode", RUBY_METHOD_FUNC(rb_img_erode), -1);
+  rb_define_method(rb_cImage, "erode!", RUBY_METHOD_FUNC(rb_img_erode_inplace), -1);
+  rb_define_method(rb_cImage, "fill", RUBY_METHOD_FUNC(rb_img_fill), -1);
+  rb_define_method(rb_cImage, "fill!", RUBY_METHOD_FUNC(rb_img_fill_inplace), -1);
+  rb_define_method(rb_cImage, "mean", RUBY_METHOD_FUNC(rb_img_mean), -1);
+  rb_define_method(rb_cImage, "resize", RUBY_METHOD_FUNC(rb_img_resize), 1);
+  rb_define_method(rb_cImage, "resize!", RUBY_METHOD_FUNC(rb_img_resize_inplace), 1);
+  rb_define_method(rb_cImage, "rows", RUBY_METHOD_FUNC(rb_img_get_rows), 0);
+  rb_define_method(rb_cImage, "size", RUBY_METHOD_FUNC(rb_img_get_size), 0);
+  rb_define_method(rb_cImage, "threshold", RUBY_METHOD_FUNC(rb_img_threshold), -1);
+  rb_define_method(rb_cImage, "threshold!", RUBY_METHOD_FUNC(rb_img_threshold_inplace), -1);
+  rb_define_method(rb_cImage, "threshold_inv", RUBY_METHOD_FUNC(rb_img_threshold_inv), -1);
+  rb_define_method(rb_cImage, "threshold_inv!", RUBY_METHOD_FUNC(rb_img_threshold_inv_inplace), -1);
+  rb_define_method(rb_cImage, "warp_perspective", RUBY_METHOD_FUNC(rb_img_warp_perspective), 2);
+  rb_define_method(rb_cImage, "write", RUBY_METHOD_FUNC(rb_img_write), 1);
 
   // Constants
-  rb_define_const(ImageClass, "TYPE_8UC1", INT2NUM(CV_8UC1));
-  rb_define_const(ImageClass, "TYPE_8UC3", INT2NUM(CV_8UC3));
+  rb_define_const(rb_cImage, "TYPE_8UC1", INT2NUM(CV_8UC1));
+  rb_define_const(rb_cImage, "TYPE_8UC3", INT2NUM(CV_8UC3));
 }
 
 VALUE
 rb_img_alloc(VALUE self) {
   cv::Mat *mat = new cv::Mat();
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, mat);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, mat);
 }
 
 void
@@ -76,7 +76,7 @@ rb_img_initialize(int argc, VALUE *argv, VALUE self) {
   VALUE size, type;
   rb_scan_args(argc, argv, "02", &size, &type);
 
-  if(RTEST(size) && CLASS_OF(size) != SizeClass) {
+  if(RTEST(size) && CLASS_OF(size) != rb_cSize) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Size)",
         rb_obj_classname(size));
   }
@@ -116,7 +116,7 @@ _do_canny(VALUE self, VALUE threshold1, VALUE threshold2, bool inplace) {
 VALUE
 rb_img_canny(VALUE self, VALUE threshold1, VALUE threshold2) {
   cv::Mat *img = _do_canny(self, threshold1, threshold2, false);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -130,12 +130,12 @@ rb_img_copy_inplace(int argc, VALUE *argv, VALUE self) {
   VALUE src, mask;
   rb_scan_args(argc, argv, "11", &src, &mask);
 
-  if(CLASS_OF(src) != ImageClass) {
+  if(CLASS_OF(src) != rb_cImage) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
         rb_obj_classname(src));
   }
 
-  if(RTEST(mask) && CLASS_OF(mask) != ImageClass) {
+  if(RTEST(mask) && CLASS_OF(mask) != rb_cImage) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
         rb_obj_classname(mask));
   }
@@ -186,7 +186,7 @@ _do_dilate(int argc, VALUE *argv, VALUE self, bool inplace) {
 VALUE
 rb_img_dilate(int argc, VALUE *argv, VALUE self) {
   cv::Mat *img = _do_dilate(argc, argv, self, false);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -197,11 +197,11 @@ rb_img_dilate_inplace(int argc, VALUE *argv, VALUE self) {
 
 VALUE
 rb_img_draw_contours(VALUE self, VALUE contours, VALUE color) {
-  if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) != ContourClass)
+  if(TYPE(contours) != T_ARRAY && CLASS_OF(contours) != rb_cContour)
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Array or Spyglass::Contour)",
         rb_obj_classname(contours));
 
-  if(CLASS_OF(color) != ColorClass) {
+  if(CLASS_OF(color) != rb_cColor) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Color)",
         rb_obj_classname(color));
   }
@@ -228,7 +228,7 @@ rb_img_draw_contours(VALUE self, VALUE contours, VALUE color) {
 
 VALUE
 rb_img_draw_rectangle(VALUE self, VALUE rect, VALUE color) {
-  if(CLASS_OF(rect) != RectClass) {
+  if(CLASS_OF(rect) != rb_cRect) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
         rb_obj_classname(rect));
   }
@@ -284,7 +284,7 @@ _do_erode(int argc, VALUE *argv, VALUE self, bool inplace) {
 VALUE
 rb_img_erode(int argc, VALUE *argv, VALUE self) {
   cv::Mat *img = _do_erode(argc, argv, self, false);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -298,11 +298,11 @@ _do_fill(int argc, VALUE *argv, VALUE self, bool inplace) {
   VALUE color, mask;
   rb_scan_args(argc, argv, "11", &color, &mask);
 
-  if(CLASS_OF(color) != ColorClass)
+  if(CLASS_OF(color) != rb_cColor)
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Color)",
         rb_obj_classname(color));
 
-  if(RTEST(mask) && CLASS_OF(mask) != ImageClass)
+  if(RTEST(mask) && CLASS_OF(mask) != rb_cImage)
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
         rb_obj_classname(mask));
 
@@ -324,7 +324,7 @@ _do_fill(int argc, VALUE *argv, VALUE self, bool inplace) {
 VALUE
 rb_img_fill(int argc, VALUE *argv, VALUE self) {
   cv::Mat *img = _do_fill(argc, argv, self, false);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -341,7 +341,7 @@ rb_img_load(int argc, VALUE *argv, VALUE klass) {
 
   cv::Mat _img = cv::imread(StringValueCStr(filename));
   cv::Mat *img = new cv::Mat(_img);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -395,7 +395,7 @@ _do_convert(VALUE self, VALUE color_space, bool inplace) {
 VALUE
 rb_img_convert(VALUE self, VALUE color_space) {
   cv::Mat *img = _do_convert(self, color_space, false);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -406,7 +406,7 @@ rb_img_convert_inplace(VALUE self, VALUE color_space) {
 
 cv::Mat *
 _do_crop(VALUE self, VALUE rect) {
-  if(CLASS_OF(rect) != RectClass) {
+  if(CLASS_OF(rect) != rb_cRect) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Rect)",
         rb_obj_classname(rect));
   }
@@ -422,7 +422,7 @@ _do_crop(VALUE self, VALUE rect) {
 VALUE
 rb_img_crop(VALUE self, VALUE rect) {
   cv::Mat *img = _do_crop(self, rect);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -444,7 +444,7 @@ rb_img_mean(int argc, VALUE *argv, VALUE self) {
   VALUE mask;
   rb_scan_args(argc, argv, "01", &mask);
 
-  if(RTEST(mask) && CLASS_OF(mask) != ImageClass) {
+  if(RTEST(mask) && CLASS_OF(mask) != rb_cImage) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
         rb_obj_classname(mask));
   }
@@ -495,7 +495,7 @@ _do_resize(VALUE self, VALUE size, bool inplace) {
 VALUE
 rb_img_resize(VALUE self, VALUE size) {
   cv::Mat *img = _do_resize(self, size, false);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -530,7 +530,7 @@ _do_threshold(int argc, VALUE *argv, VALUE self, bool inverse, bool inplace) {
 VALUE
 rb_img_threshold(int argc, VALUE *argv, VALUE self) {
   cv::Mat *img = _do_threshold(argc, argv, self, false, false);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -542,7 +542,7 @@ rb_img_threshold_inplace(int argc, VALUE *argv, VALUE self) {
 VALUE
 rb_img_threshold_inv(int argc, VALUE *argv, VALUE self) {
   cv::Mat *img = _do_threshold(argc, argv, self, true, false);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
@@ -576,7 +576,7 @@ rb_img_warp_perspective(VALUE self, VALUE corners, VALUE size) {
 
  	cv::Mat transmtx = cv::getPerspectiveTransform(corner_pts, quad_pts);
 	cv::warpPerspective(*img, *result, transmtx, result->size());
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, result);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, result);
 }
 
 VALUE
@@ -593,7 +593,7 @@ rb_img_zeros(int argc, VALUE *argv, VALUE klass) {
   VALUE size, type;
   rb_scan_args(argc, argv, "11", &size, &type);
 
-  if(CLASS_OF(size) != SizeClass) {
+  if(CLASS_OF(size) != rb_cSize) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Size)",
         rb_obj_classname(size));
   }
@@ -604,11 +604,11 @@ rb_img_zeros(int argc, VALUE *argv, VALUE klass) {
 
   cv::Mat zeros = cv::Mat::zeros(*_size, _type);
   cv::Mat *img  = new cv::Mat(zeros);
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, img);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, img);
 }
 
 VALUE
 cv_img_to_rb_img(cv::Mat *mat) {
-  return Data_Wrap_Struct(ImageClass, NULL, rb_img_free, mat);
+  return Data_Wrap_Struct(rb_cImage, NULL, rb_img_free, mat);
 }
 

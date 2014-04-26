@@ -1,27 +1,27 @@
 #include "color.h"
 
-extern VALUE SpyglassModule;
+extern VALUE rb_mSpyglass;
 
-VALUE ColorClass = Qnil;
+VALUE rb_cColor = Qnil;
 
 void
 rb_color_init() {
   // Class definition
-  ColorClass = rb_define_class_under(SpyglassModule, "Color", rb_cObject);
-  rb_define_alloc_func(ColorClass, rb_color_alloc);
-  rb_define_method(ColorClass, "initialize", RUBY_METHOD_FUNC(rb_color_initialize), -1);
+  rb_cColor = rb_define_class_under(rb_mSpyglass, "Color", rb_cObject);
+  rb_define_alloc_func(rb_cColor, rb_color_alloc);
+  rb_define_method(rb_cColor, "initialize", RUBY_METHOD_FUNC(rb_color_initialize), -1);
 
   // Instance methods
-  rb_define_method(ColorClass, "[]", RUBY_METHOD_FUNC(rb_color_get_component), 1);
-  rb_define_method(ColorClass, "[]=", RUBY_METHOD_FUNC(rb_color_set_component), 2);
-  rb_define_method(ColorClass, "to_a", RUBY_METHOD_FUNC(rb_color_to_a), 0);
-  rb_define_method(ColorClass, "zeros?", RUBY_METHOD_FUNC(rb_color_is_zeros), 0);
+  rb_define_method(rb_cColor, "[]", RUBY_METHOD_FUNC(rb_color_get_component), 1);
+  rb_define_method(rb_cColor, "[]=", RUBY_METHOD_FUNC(rb_color_set_component), 2);
+  rb_define_method(rb_cColor, "to_a", RUBY_METHOD_FUNC(rb_color_to_a), 0);
+  rb_define_method(rb_cColor, "zeros?", RUBY_METHOD_FUNC(rb_color_is_zeros), 0);
 }
 
 VALUE
 rb_color_alloc(VALUE self) {
   cv::Scalar *color = new cv::Scalar(0, 0, 0, 0);
-  return Data_Wrap_Struct(ColorClass, NULL, rb_color_free, color);
+  return Data_Wrap_Struct(rb_cColor, NULL, rb_color_free, color);
 }
 
 void
@@ -44,10 +44,10 @@ rb_color_initialize(int argc, VALUE *argv, VALUE self) {
 }
 
 VALUE
-rb_color_get_component(VALUE self, VALUE index) {
-  Check_Type(index, T_FIXNUM);
+rb_color_get_component(VALUE self, VALUE r_index) {
+  Check_Type(r_index, T_FIXNUM);
 
-  int idx = NUM2INT(index);
+  int idx = NUM2INT(r_index);
 
   if(idx < 0 || idx > 3)
     return Qnil;
@@ -58,11 +58,11 @@ rb_color_get_component(VALUE self, VALUE index) {
 }
 
 VALUE
-rb_color_set_component(VALUE self, VALUE index, VALUE value) {
+rb_color_set_component(VALUE self, VALUE r_index, VALUE r_value) {
   cv::Scalar *color = SG_GET_COLOR(self);
-  int idx = NUM2INT(index);
+  int idx = NUM2INT(r_index);
 
-  color[idx] = NUM2DBL(value);
+  color[idx] = NUM2DBL(r_value);
 
   return self;
 }
@@ -90,5 +90,5 @@ rb_color_is_zeros(VALUE self) {
 
 VALUE
 cv_color_to_rb_color(cv::Scalar *color) {
-  return Data_Wrap_Struct(ColorClass, NULL, rb_color_free, color);
+  return Data_Wrap_Struct(rb_cColor, NULL, rb_color_free, color);
 }

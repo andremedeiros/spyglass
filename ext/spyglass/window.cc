@@ -1,32 +1,32 @@
 #include "window.h"
 
-extern VALUE GuiModule;
-extern VALUE ImageClass;
+extern VALUE rb_mGUI;
+extern VALUE rb_cImage;
 
-VALUE WindowClass = Qnil;
+VALUE rb_cWindow = Qnil;
 
 void rb_window_init() {
   // Class definition
-  WindowClass = rb_define_class_under(GuiModule, "Window", rb_cObject);
-  rb_define_alloc_func(WindowClass, rb_window_alloc);
-  rb_define_method(WindowClass, "initialize", RUBY_METHOD_FUNC(rb_window_initialize), 1);
+  rb_cWindow = rb_define_class_under(rb_mGUI, "Window", rb_cObject);
+  rb_define_alloc_func(rb_cWindow, rb_window_alloc);
+  rb_define_method(rb_cWindow, "initialize", RUBY_METHOD_FUNC(rb_window_initialize), 1);
 
   // Instance methods
-  rb_define_method(WindowClass, "hide", RUBY_METHOD_FUNC(rb_window_hide), 0);
-  rb_define_method(WindowClass, "move", RUBY_METHOD_FUNC(rb_window_move), 2);
-  rb_define_method(WindowClass, "on_click", RUBY_METHOD_FUNC(rb_window_on_click), 0);
-  rb_define_method(WindowClass, "on_double_click", RUBY_METHOD_FUNC(rb_window_on_double_click), 0);
-  rb_define_method(WindowClass, "on_right_click", RUBY_METHOD_FUNC(rb_window_on_right_click), 0);
-  rb_define_method(WindowClass, "on_move", RUBY_METHOD_FUNC(rb_window_on_move), 0);
-  rb_define_method(WindowClass, "show", RUBY_METHOD_FUNC(rb_window_show), 1);
-  rb_define_method(WindowClass, "title", RUBY_METHOD_FUNC(rb_window_get_title), 0);
+  rb_define_method(rb_cWindow, "hide", RUBY_METHOD_FUNC(rb_window_hide), 0);
+  rb_define_method(rb_cWindow, "move", RUBY_METHOD_FUNC(rb_window_move), 2);
+  rb_define_method(rb_cWindow, "on_click", RUBY_METHOD_FUNC(rb_window_on_click), 0);
+  rb_define_method(rb_cWindow, "on_double_click", RUBY_METHOD_FUNC(rb_window_on_double_click), 0);
+  rb_define_method(rb_cWindow, "on_right_click", RUBY_METHOD_FUNC(rb_window_on_right_click), 0);
+  rb_define_method(rb_cWindow, "on_move", RUBY_METHOD_FUNC(rb_window_on_move), 0);
+  rb_define_method(rb_cWindow, "show", RUBY_METHOD_FUNC(rb_window_show), 1);
+  rb_define_method(rb_cWindow, "title", RUBY_METHOD_FUNC(rb_window_get_title), 0);
 }
 
 VALUE
 rb_window_alloc(VALUE self) {
   window_data *window = (window_data *)malloc(sizeof(window_data));
   window->title = NULL;
-  return Data_Wrap_Struct(WindowClass, NULL, rb_window_free, window);
+  return Data_Wrap_Struct(rb_cWindow, NULL, rb_window_free, window);
 }
 
 void
@@ -67,12 +67,12 @@ _on_mouse_event(int event, int x, int y, int flags, void *obj) {
 }
 
 VALUE
-rb_window_initialize(VALUE self, VALUE title) {
-  Check_Type(title, T_STRING);
+rb_window_initialize(VALUE self, VALUE r_title) {
+  Check_Type(r_title, T_STRING);
 
   window_data *window = SG_GET_WINDOW(self);
-  window->title = (char *)malloc(rb_str_length(title) + 1);
-  strncpy(window->title, StringValuePtr(title), rb_str_length(title));
+  window->title = (char *)malloc(rb_str_length(r_title) + 1);
+  strncpy(window->title, StringValuePtr(r_title), rb_str_length(r_title));
 
   window->robj = self;
 
@@ -120,25 +120,25 @@ rb_window_on_move(VALUE self) {
 }
 
 VALUE
-rb_window_move(VALUE self, VALUE x, VALUE y) {
-  Check_Type(x, T_FIXNUM);
-  Check_Type(y, T_FIXNUM);
+rb_window_move(VALUE self, VALUE r_x, VALUE r_y) {
+  Check_Type(r_x, T_FIXNUM);
+  Check_Type(r_y, T_FIXNUM);
 
   window_data *window = SG_GET_WINDOW(self);
-  cv::moveWindow(window->title, FIX2INT(x), FIX2INT(y));
+  cv::moveWindow(window->title, FIX2INT(r_x), FIX2INT(r_y));
   cv::waitKey(1);
 
   return self;
 }
 
 VALUE
-rb_window_show(VALUE self, VALUE image) {
-  if(CLASS_OF(image) != ImageClass) {
+rb_window_show(VALUE self, VALUE r_image) {
+  if(CLASS_OF(r_image) != rb_cImage) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
-        rb_obj_classname(image));
+        rb_obj_classname(r_image));
   }
 
-  cv::Mat *img = SG_GET_IMAGE(image);
+  cv::Mat *img = SG_GET_IMAGE(r_image);
 
   window_data *window = SG_GET_WINDOW(self);
   cv::imshow(window->title, *img);

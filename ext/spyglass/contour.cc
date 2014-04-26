@@ -1,30 +1,30 @@
 #include "contour.h"
 
-extern VALUE SpyglassModule;
-extern VALUE PointClass;
+extern VALUE rb_mSpyglass;
+extern VALUE rb_cPoint;
 
-VALUE ContourClass = Qnil;
+VALUE rb_cContour = Qnil;
 
 void
 rb_contour_init() {
   // Class definition
-  ContourClass = rb_define_class_under(SpyglassModule, "Contour", rb_cObject);
-  rb_define_alloc_func(ContourClass, rb_contour_alloc);
-  rb_define_method(ContourClass, "initialize", RUBY_METHOD_FUNC(rb_contour_initialize), -1);
+  rb_cContour = rb_define_class_under(rb_mSpyglass, "Contour", rb_cObject);
+  rb_define_alloc_func(rb_cContour, rb_contour_alloc);
+  rb_define_method(rb_cContour, "initialize", RUBY_METHOD_FUNC(rb_contour_initialize), -1);
 
   // Instance methods
-  rb_define_method(ContourClass, "corners", RUBY_METHOD_FUNC(rb_contour_get_corners), 0);
-  rb_define_method(ContourClass, "convex?", RUBY_METHOD_FUNC(rb_contour_is_convex), 0);
-  rb_define_method(ContourClass, "rect", RUBY_METHOD_FUNC(rb_contour_get_rect), 0);
+  rb_define_method(rb_cContour, "corners", RUBY_METHOD_FUNC(rb_contour_get_corners), 0);
+  rb_define_method(rb_cContour, "convex?", RUBY_METHOD_FUNC(rb_contour_is_convex), 0);
+  rb_define_method(rb_cContour, "rect", RUBY_METHOD_FUNC(rb_contour_get_rect), 0);
 
   // Aliases
-  rb_define_alias(ContourClass, "closed?", "convex?");
+  rb_define_alias(rb_cContour, "closed?", "convex?");
 }
 
 VALUE
 rb_contour_alloc(VALUE self) {
   std::vector<cv::Point *> *contour = new std::vector<cv::Point *>();
-  return Data_Wrap_Struct(ContourClass, NULL, rb_contour_free, contour);
+  return Data_Wrap_Struct(rb_cContour, NULL, rb_contour_free, contour);
 }
 
 void
@@ -35,24 +35,24 @@ rb_contour_free(std::vector<cv::Point *> *contour) {
 
 VALUE
 rb_contour_initialize(int argc, VALUE *argv, VALUE self) {
-  VALUE points;
-  rb_scan_args(argc, argv, "01", &points);
+  VALUE r_points;
+  rb_scan_args(argc, argv, "01", &r_points);
 
-  if(!RTEST(points))
+  if(!RTEST(r_points))
     return self;
 
-  Check_Type(points, T_ARRAY);
+  Check_Type(r_points, T_ARRAY);
 
   std::vector<cv::Point *> *contour = SG_GET_CONTOUR(self);
-  for(int idx = 0; idx < RARRAY_LEN(points); idx++) {
-    VALUE point = rb_ary_entry(points, idx);
-    if(CLASS_OF(point) != PointClass) {
+  for(int idx = 0; idx < RARRAY_LEN(r_points); idx++) {
+    VALUE r_point = rb_ary_entry(r_points, idx);
+    if(CLASS_OF(r_point) != rb_cPoint) {
       rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Point)",
-          rb_obj_classname(point));
+          rb_obj_classname(r_point));
     }
 
-    cv::Point *_point = new cv::Point(* SG_GET_POINT(point));
-    contour->push_back(_point);
+    cv::Point *point = new cv::Point(* SG_GET_POINT(r_point));
+    contour->push_back(point);
   }
 
   return self;
@@ -136,7 +136,7 @@ cv_points_to_rb_vector(std::vector<cv::Point> contours) {
     ctrs->push_back(new cv::Point(contours[idx]));
   }
 
-  return Data_Wrap_Struct(ContourClass, NULL, rb_contour_free, ctrs);
+  return Data_Wrap_Struct(rb_cContour, NULL, rb_contour_free, ctrs);
 }
 
 VALUE

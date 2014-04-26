@@ -4,6 +4,6 @@
 #include "spyglass.h"
 
 void rb_gui_init();
-VALUE rb_gui_wait_key(VALUE klass, VALUE timeout);
+VALUE rb_gui_wait_key(VALUE klass, VALUE r_timeout);
 
 #endif // SPYGLASS_GUI_H_

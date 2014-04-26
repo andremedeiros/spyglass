@@ -6,11 +6,11 @@
 void rb_point_init();
 VALUE rb_point_alloc(VALUE self);
 void rb_point_free(cv::Point *point);
-VALUE rb_point_initialize(VALUE self, VALUE x, VALUE y);
+VALUE rb_point_initialize(VALUE self, VALUE r_x, VALUE r_y);
 VALUE rb_point_get_x(VALUE self);
 VALUE rb_point_get_y(VALUE self);
-VALUE rb_point_set_x(VALUE self, VALUE x);
-VALUE rb_point_set_y(VALUE self, VALUE y);
+VALUE rb_point_set_x(VALUE self, VALUE r_x);
+VALUE rb_point_set_y(VALUE self, VALUE r_y);
 
 VALUE cv_point_to_rb_point(cv::Point *point);
 VALUE cv_rect_to_rb_point(cv::Rect *rect);

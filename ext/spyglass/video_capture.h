@@ -7,7 +7,7 @@ void rb_cap_init();
 VALUE rb_cap_alloc(VALUE self);
 void rb_cap_free(cv::VideoCapture *cap);
 VALUE rb_cap_initialize(int argc, VALUE *argv, VALUE self);
-VALUE rb_cap_capture(VALUE self, VALUE dest);
+VALUE rb_cap_capture(VALUE self, VALUE r_dest);
 VALUE rb_cap_is_open(VALUE self);
 VALUE rb_cap_stop(VALUE self);
 

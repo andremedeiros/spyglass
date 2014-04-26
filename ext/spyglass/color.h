@@ -7,8 +7,8 @@ void rb_color_init();
 VALUE rb_color_alloc(VALUE self);
 void rb_color_free(cv::Scalar *color);
 VALUE rb_color_initialize(int argc, VALUE *argv, VALUE self);
-VALUE rb_color_get_component(VALUE self, VALUE index);
-VALUE rb_color_set_component(VALUE self, VALUE index, VALUE color);
+VALUE rb_color_get_component(VALUE self, VALUE r_index);
+VALUE rb_color_set_component(VALUE self, VALUE r_index, VALUE r_color);
 VALUE rb_color_is_zeros(VALUE self);
 VALUE rb_color_to_a(VALUE self);
 

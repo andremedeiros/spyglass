@@ -1,25 +1,25 @@
 #include "video_capture.h"
 
-extern VALUE SpyglassModule;
-extern VALUE ImageClass;
+extern VALUE rb_mSpyglass;
+extern VALUE rb_cImage;
 
-VALUE VideoCaptureClass = Qnil;
+VALUE rb_cVideoCapture = Qnil;
 
 void rb_cap_init() {
-  VideoCaptureClass = rb_define_class_under(SpyglassModule, "VideoCapture", rb_cObject);
-  rb_define_alloc_func(VideoCaptureClass, rb_cap_alloc);
-  rb_define_method(VideoCaptureClass, "initialize", RUBY_METHOD_FUNC(rb_cap_initialize), -1);
+  rb_cVideoCapture = rb_define_class_under(rb_mSpyglass, "VideoCapture", rb_cObject);
+  rb_define_alloc_func(rb_cVideoCapture, rb_cap_alloc);
+  rb_define_method(rb_cVideoCapture, "initialize", RUBY_METHOD_FUNC(rb_cap_initialize), -1);
 
   // Instance methods
-  rb_define_method(VideoCaptureClass, ">>", RUBY_METHOD_FUNC(rb_cap_capture), 1);
-  rb_define_method(VideoCaptureClass, "open?", RUBY_METHOD_FUNC(rb_cap_is_open), 0);
-  rb_define_method(VideoCaptureClass, "stop", RUBY_METHOD_FUNC(rb_cap_stop), 0);
+  rb_define_method(rb_cVideoCapture, ">>", RUBY_METHOD_FUNC(rb_cap_capture), 1);
+  rb_define_method(rb_cVideoCapture, "open?", RUBY_METHOD_FUNC(rb_cap_is_open), 0);
+  rb_define_method(rb_cVideoCapture, "stop", RUBY_METHOD_FUNC(rb_cap_stop), 0);
 }
 
 VALUE
 rb_cap_alloc(VALUE self) {
   cv::VideoCapture *cap = new cv::VideoCapture();
-  return Data_Wrap_Struct(VideoCaptureClass, NULL, rb_cap_free, cap);
+  return Data_Wrap_Struct(rb_cVideoCapture, NULL, rb_cap_free, cap);
 }
 
 void
@@ -69,18 +69,18 @@ rb_cap_initialize(int argc, VALUE *argv, VALUE self) {
 }
 
 VALUE
-rb_cap_capture(VALUE self, VALUE dest) {
-  if(CLASS_OF(dest) != ImageClass) {
+rb_cap_capture(VALUE self, VALUE r_dest) {
+  if(CLASS_OF(r_dest) != rb_cImage) {
     rb_raise(rb_eTypeError, "wrong argument type %s (expected Spyglass::Image)",
-        rb_obj_classname(dest));
+        rb_obj_classname(r_dest));
   }
 
   cv::VideoCapture *cap = SG_GET_VIDEO_CAPTURE(self);
-  cv::Mat *img          = SG_GET_IMAGE(dest);
+  cv::Mat *img          = SG_GET_IMAGE(r_dest);
 
   (*cap) >> (*img);
 
-  return dest;
+  return r_dest;
 }
 
 VALUE
