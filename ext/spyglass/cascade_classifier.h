@@ -3,18 +3,12 @@
 
 #include "spyglass.h"
 
-namespace Spyglass {
+void rb_cc_init();
+VALUE rb_cc_alloc(VALUE self);
+void rb_cc_free(cv::CascadeClassifier *classifier);
+VALUE rb_cc_initialize(VALUE self, VALUE src);
+VALUE rb_cc_detect(int argc, VALUE *argv, VALUE self);
 
-  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_CLASSIFIER, cv::CascadeClassifier);
-
-  namespace CascadeClassifier {
-    void define_ruby_class();
-
-    static VALUE rb_alloc(VALUE self);
-    static void rb_free(cv::CascadeClassifier *classifier);
-    static VALUE rb_initialize(VALUE self, VALUE src);
-    static VALUE rb_detect(int argc, VALUE *argv, VALUE self);
-  }
-}
+SG_GEN_GET_OBJECT_FUNCTION(SG_GET_CLASSIFIER, cv::CascadeClassifier);
 
 #endif // SPYGLASS_CASCADE_CLASSIFIER_H_

@@ -3,12 +3,7 @@
 
 #include "spyglass.h"
 
-namespace Spyglass {
-  namespace GUI {
-    void define_ruby_module();
-
-    static VALUE rb_wait_key(VALUE klass, VALUE timeout);
-  }
-}
+void rb_gui_init();
+VALUE rb_gui_wait_key(VALUE klass, VALUE timeout);
 
 #endif // SPYGLASS_GUI_H_

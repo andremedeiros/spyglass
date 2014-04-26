@@ -3,33 +3,25 @@
 
 #include "spyglass.h"
 
-namespace Spyglass {
+typedef struct window_data {
+  char *title;
+  VALUE robj;
+} window_data;
 
-  typedef struct window_data {
-    char *title;
-    VALUE robj;
-  } window_data;
+void rb_window_init();
 
-  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_WINDOW, window_data);
+VALUE rb_window_alloc(VALUE self);
+void rb_window_free(window_data *window);
+VALUE rb_window_initialize(VALUE self, VALUE title);
+VALUE rb_window_hide(VALUE self);
+VALUE rb_window_move(VALUE self, VALUE x, VALUE y);
+VALUE rb_window_on_click(VALUE self);
+VALUE rb_window_on_double_click(VALUE self);
+VALUE rb_window_on_right_click(VALUE self);
+VALUE rb_window_on_move(VALUE self);
+VALUE rb_window_show(VALUE self, VALUE image);
+VALUE rb_window_get_title(VALUE self);
 
-  namespace GUI {
-    namespace Window {
-      void define_ruby_class();
-
-      static VALUE rb_alloc(VALUE self);
-      static void rb_free(window_data *window);
-      static VALUE rb_initialize(VALUE self, VALUE title);
-      static VALUE rb_hide(VALUE self);
-      static VALUE rb_move(VALUE self, VALUE x, VALUE y);
-      static VALUE rb_on_click(VALUE self);
-      static VALUE rb_on_double_click(VALUE self);
-      static VALUE rb_on_right_click(VALUE self);
-      static VALUE rb_on_move(VALUE self);
-      static VALUE rb_show(VALUE self, VALUE image);
-      static VALUE rb_get_title(VALUE self);
-    }
-  }
-}
-
+SG_GEN_GET_OBJECT_FUNCTION(SG_GET_WINDOW, window_data);
 
 #endif // SPYGLASS_WINDOW_H_

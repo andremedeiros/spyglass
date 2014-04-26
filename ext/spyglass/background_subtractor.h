@@ -5,23 +5,17 @@
 
 #include "bgslib_dp_prati_mediod_bgs.h"
 
-namespace Spyglass {
+void rb_bgs_init();
+void rb_bgs_free(cv::BackgroundSubtractor *bg);
+VALUE rb_bgs_initialize(int argc, VALUE *argv, VALUE self);
+VALUE rb_bgs_subtract(int argc, VALUE *argv, VALUE self);
 
-  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_BG_SUBTRACTOR, cv::BackgroundSubtractor);
+// BGS Allocators
+VALUE rb_bgs_mog_alloc(VALUE self);
+VALUE rb_bgs_mog2_alloc(VALUE self);
+VALUE rb_bgs_gmg_alloc(VALUE self);
+VALUE rb_bgs_prati_mediod_alloc(VALUE self);
 
-  namespace BackgroundSubtractor {
-    void define_ruby_types();
-
-    static void rb_free(cv::BackgroundSubtractor *bg);
-    static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_subtract(int argc, VALUE *argv, VALUE self);
-
-    // Class allocators
-    static VALUE rb_mog_alloc(VALUE self);
-    static VALUE rb_mog2_alloc(VALUE self);
-    static VALUE rb_gmg_alloc(VALUE self);
-    static VALUE rb_prati_mediod_alloc(VALUE self);
-  }
-}
+SG_GEN_GET_OBJECT_FUNCTION(SG_GET_BG_SUBTRACTOR, cv::BackgroundSubtractor);
 
 #endif // SPYGLASS_BACKGROUND_SUBTRACTOR_H_

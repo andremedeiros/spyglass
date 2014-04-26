@@ -3,10 +3,6 @@
 
 #include "spyglass.h"
 
-namespace Spyglass {
-  namespace ColorSpace {
-    void define_ruby_module();
-  }
-}
+void rb_cs_init();
 
-#endif
+#endif // SPYGLASS_COLOR_SPACE_H_

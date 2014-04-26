@@ -3,23 +3,17 @@
 
 #include "spyglass.h"
 
-namespace Spyglass {
+void rb_color_init();
+VALUE rb_color_alloc(VALUE self);
+void rb_color_free(cv::Scalar *color);
+VALUE rb_color_initialize(int argc, VALUE *argv, VALUE self);
+VALUE rb_color_get_component(VALUE self, VALUE index);
+VALUE rb_color_set_component(VALUE self, VALUE index, VALUE color);
+VALUE rb_color_is_zeros(VALUE self);
+VALUE rb_color_to_a(VALUE self);
 
-  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_COLOR, cv::Scalar);
+VALUE cv_color_to_rb_color(cv::Scalar *color);
 
-  namespace Color {
-    void define_ruby_class();
+SG_GEN_GET_OBJECT_FUNCTION(SG_GET_COLOR, cv::Scalar);
 
-    static VALUE rb_alloc(VALUE self);
-    static void rb_free(cv::Scalar *color);
-    static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_get_color(VALUE self, VALUE index);
-    static VALUE rb_set_color(VALUE self, VALUE index, VALUE color);
-    static VALUE rb_is_zeros(VALUE self);
-    static VALUE rb_to_a(VALUE self);
-
-    VALUE from_cvscalar(cv::Scalar *color);
-  }
-}
-
-#endif
+#endif // SPYGLASS_COLOR_H_

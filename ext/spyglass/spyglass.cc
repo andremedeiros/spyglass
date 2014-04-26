@@ -2,30 +2,21 @@
 
 VALUE SpyglassModule = Qnil;
 
-namespace Spyglass {
+void
+Init_spyglass() {
+  SpyglassModule = rb_define_module("Spyglass");
 
-  void define_ruby_module() {
-    SpyglassModule = rb_define_module("Spyglass");
-  }
+  rb_cs_init();       // Module: ColorSpace
+  rb_bgs_init();      // Class cluster: Background Subtractors
+  rb_cc_init();       // Class: CascadeClassifier
+  rb_color_init();    // Class: Color
+  rb_contour_init();  // Class: Contour
+  rb_img_init();      // Class: Image
+  rb_point_init();    // Class: Point
+  rb_rect_init();     // Class: Rect
+  rb_size_init();     // Class: Size
+  rb_cap_init();      // Class: VideoCapture
 
-}
-
-extern "C" {
-  void Init_spyglass() {
-    Spyglass::define_ruby_module();
-    Spyglass::ColorSpace::define_ruby_module();
-
-    Spyglass::BackgroundSubtractor::define_ruby_types();
-    Spyglass::CascadeClassifier::define_ruby_class();
-    Spyglass::Color::define_ruby_class();
-    Spyglass::Contour::define_ruby_class();
-    Spyglass::Image::define_ruby_class();
-    Spyglass::Point::define_ruby_class();
-    Spyglass::Rect::define_ruby_class();
-    Spyglass::Size::define_ruby_class();
-    Spyglass::VideoCapture::define_ruby_class();
-
-    Spyglass::GUI::define_ruby_module();
-    Spyglass::GUI::Window::define_ruby_class();
-  }
+  rb_gui_init();      // Module: GUI
+  rb_window_init();   // Class: GUI::Window
 }

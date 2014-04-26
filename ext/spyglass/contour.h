@@ -3,24 +3,19 @@
 
 #include "spyglass.h"
 
-namespace Spyglass {
+void rb_contour_init();
 
-  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_CONTOUR, std::vector<cv::Point *>);
+VALUE rb_contour_alloc(VALUE self);
+void rb_contour_free(std::vector<cv::Point *> *contour);
+VALUE rb_contour_initialize(int argc, VALUE *argv, VALUE self);
+VALUE rb_contour_get_corners(VALUE self);
+VALUE rb_contour_get_rect(VALUE self);
+VALUE rb_contour_is_convex(VALUE self);
 
-  namespace Contour {
-    void define_ruby_class();
+std::vector<cv::Point> cv_contour_to_cv_points(std::vector<cv::Point *> *contour);
+VALUE cv_points_to_rb_vector(std::vector<cv::Point> contours);
+VALUE cv_contours_to_rb_contours(std::vector<std::vector<cv::Point> > contours);
 
-    static VALUE rb_alloc(VALUE self);
-    static void rb_free(std::vector<cv::Point *> *contour);
-    static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_get_corners(VALUE self);
-    static VALUE rb_get_rect(VALUE self);
-    static VALUE rb_is_convex(VALUE self);
-
-    std::vector<cv::Point> to_value_vector(std::vector<cv::Point *> *contour);
-    VALUE from_cvpoint_vector(std::vector<cv::Point> contours);
-    VALUE from_contour_vector(std::vector<std::vector<cv::Point> > contours);
-  }
-}
+SG_GEN_GET_OBJECT_FUNCTION(SG_GET_CONTOUR, std::vector<cv::Point *>);
 
 #endif // SPYGLASS_CONTOUR_H_

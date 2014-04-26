@@ -3,51 +3,45 @@
 
 #include "spyglass.h"
 
-namespace Spyglass {
+void rb_img_init();
+VALUE rb_img_alloc(VALUE self);
+void rb_img_free(cv::Mat *mat);
+VALUE rb_img_initialize(int argc, VALUE *argv, VALUE self);
+VALUE rb_img_canny(VALUE self, VALUE threshold1, VALUE threshold2);
+VALUE rb_img_canny_inplace(VALUE self, VALUE threshold1, VALUE threshold2);
+VALUE rb_img_convert(VALUE self, VALUE color_space);
+VALUE rb_img_convert_inplace(VALUE self, VALUE color_space);
+VALUE rb_img_copy_inplace(int argc, VALUE *argv, VALUE self);
+VALUE rb_img_crop(VALUE self, VALUE rect);
+VALUE rb_img_crop_inplace(VALUE self, VALUE rect);
+VALUE rb_img_dilate(int argc, VALUE *argv, VALUE self);
+VALUE rb_img_dilate_inplace(int argc, VALUE *argv, VALUE self);
+VALUE rb_img_draw_contours(VALUE self, VALUE contours, VALUE color);
+VALUE rb_img_draw_rectangle(VALUE self, VALUE rect, VALUE color);
+VALUE rb_img_draw_label(VALUE self, VALUE string, VALUE point);
+VALUE rb_img_erode(int argc, VALUE *argv, VALUE self);
+VALUE rb_img_erode_inplace(int argc, VALUE *argv, VALUE self);
+VALUE rb_img_fill(int argc, VALUE *argv, VALUE self);
+VALUE rb_img_fill_inplace(int argc, VALUE *argv, VALUE self);
+VALUE rb_img_load(int argc, VALUE *argv, VALUE klass);
+VALUE rb_img_mean(int argc, VALUE *argv, VALUE klass);
+VALUE rb_img_resize(VALUE self, VALUE size);
+VALUE rb_img_resize_inplace(VALUE self, VALUE size);
+VALUE rb_img_threshold(int argc, VALUE *argv, VALUE klass);
+VALUE rb_img_threshold_inplace(int argc, VALUE *argv, VALUE klass);
+VALUE rb_img_threshold_inv(int argc, VALUE *argv, VALUE klass);
+VALUE rb_img_threshold_inv_inplace(int argc, VALUE *argv, VALUE klass);
+VALUE rb_img_get_color_at(VALUE self, VALUE point);
+VALUE rb_img_get_cols(VALUE self);
+VALUE rb_img_get_contours(VALUE self);
+VALUE rb_img_get_rows(VALUE self);
+VALUE rb_img_get_size(VALUE self);
+VALUE rb_img_warp_perspective(VALUE self, VALUE corners, VALUE size);
+VALUE rb_img_write(VALUE self, VALUE filename);
+VALUE rb_img_zeros(int argc, VALUE *argv, VALUE klass);
 
-  SG_GEN_GET_OBJECT_FUNCTION(SG_GET_IMAGE, cv::Mat);
+VALUE cv_img_to_rb_img(cv::Mat *mat);
 
-  namespace Image {
-    void define_ruby_class();
-
-    static VALUE rb_alloc(VALUE self);
-    static void rb_free(cv::Mat *mat);
-    static VALUE rb_initialize(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_canny(VALUE self, VALUE threshold1, VALUE threshold2);
-    static VALUE rb_canny_inplace(VALUE self, VALUE threshold1, VALUE threshold2);
-    static VALUE rb_convert(VALUE self, VALUE color_space);
-    static VALUE rb_convert_inplace(VALUE self, VALUE color_space);
-    static VALUE rb_copy_inplace(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_crop(VALUE self, VALUE rect);
-    static VALUE rb_crop_inplace(VALUE self, VALUE rect);
-    static VALUE rb_dilate(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_dilate_inplace(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_draw_contours(VALUE self, VALUE contours, VALUE color);
-    static VALUE rb_draw_rectangle(VALUE self, VALUE rect, VALUE color);
-    static VALUE rb_draw_label(VALUE self, VALUE string, VALUE point);
-    static VALUE rb_erode(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_erode_inplace(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_fill(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_fill_inplace(int argc, VALUE *argv, VALUE self);
-    static VALUE rb_load(int argc, VALUE *argv, VALUE klass);
-    static VALUE rb_mean(int argc, VALUE *argv, VALUE klass);
-    static VALUE rb_resize(VALUE self, VALUE size);
-    static VALUE rb_resize_inplace(VALUE self, VALUE size);
-    static VALUE rb_threshold(int argc, VALUE *argv, VALUE klass);
-    static VALUE rb_threshold_inplace(int argc, VALUE *argv, VALUE klass);
-    static VALUE rb_threshold_inv(int argc, VALUE *argv, VALUE klass);
-    static VALUE rb_threshold_inv_inplace(int argc, VALUE *argv, VALUE klass);
-    static VALUE rb_get_color_at(VALUE self, VALUE point);
-    static VALUE rb_get_cols(VALUE self);
-    static VALUE rb_get_contours(VALUE self);
-    static VALUE rb_get_rows(VALUE self);
-    static VALUE rb_get_size(VALUE self);
-    static VALUE rb_warp_perspective(VALUE self, VALUE corners, VALUE size);
-    static VALUE rb_write(VALUE self, VALUE filename);
-    static VALUE rb_zeros(int argc, VALUE *argv, VALUE klass);
-
-    VALUE from_cvmat(cv::Mat *mat);
-  }
-}
+SG_GEN_GET_OBJECT_FUNCTION(SG_GET_IMAGE, cv::Mat);
 
 #endif // SPYGLASS_IMAGE_H_
