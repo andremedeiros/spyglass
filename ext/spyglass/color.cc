@@ -19,14 +19,20 @@ rb_color_init() {
 }
 
 VALUE
-rb_color_alloc(VALUE self) {
+rb_color_alloc(VALUE klass) {
   cv::Scalar *color = new cv::Scalar(0, 0, 0, 0);
-  return Data_Wrap_Struct(rb_cColor, NULL, rb_color_free, color);
+  return TypedData_Wrap_Struct(rb_cColor, &color_data_type, color);
 }
 
 void
-rb_color_free(cv::Scalar *color) {
+rb_color_free(void *cobj) {
+  cv::Scalar *color = (cv::Scalar *)cobj;
   delete color;
+}
+
+size_t
+rb_color_memsize(const void *cobj) {
+  return sizeof(cv::Scalar);
 }
 
 VALUE
@@ -90,5 +96,5 @@ rb_color_is_zeros(VALUE self) {
 
 VALUE
 cv_color_to_rb_color(cv::Scalar *color) {
-  return Data_Wrap_Struct(rb_cColor, NULL, rb_color_free, color);
+  return TypedData_Wrap_Struct(rb_cColor, &color_data_type, color);
 }
